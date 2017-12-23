@@ -61,6 +61,42 @@ class Navigation extends React.Component {
               <span className="list-group-item-value">Environments</span>
             </Link>
           </li>
+          <li className={"list-group-item" + (location.pathname == '/standards' ? ' active' : '')}>
+            <Link to="/standards">
+              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Standards"></span>
+              <span className="list-group-item-value">Standards</span>
+            </Link>
+          </li>
+          <li className={"list-group-item" + (location.pathname == '/certifications' ? ' active' : '')}>
+            <Link to="/certifications">
+              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Certifications"></span>
+              <span className="list-group-item-value">Certifications</span>
+            </Link>
+          </li>
+          <li className={"list-group-item" + (location.pathname == '/components' ? ' active' : '')}>
+            <Link to="/components">
+              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Components"></span>
+              <span className="list-group-item-value">Components</span>
+            </Link>
+          </li>
+          <li className={"list-group-item" + (location.pathname == '/pages' ? ' active' : '')}>
+            <Link to="/pages">
+              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Pages"></span>
+              <span className="list-group-item-value">Pages</span>
+            </Link>
+          </li>
+          <li className={"list-group-item" + (location.pathname == '/reports' ? ' active' : '')}>
+            <Link to="/reports">
+              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Reports"></span>
+              <span className="list-group-item-value">Reports</span>
+            </Link>
+          </li>
+          <li className={"list-group-item" + (location.pathname == '/documents' ? ' active' : '')}>
+            <Link to="/documents">
+              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Documents"></span>
+              <span className="list-group-item-value">Documents</span>
+            </Link>
+          </li>
         </ul>
       </div>
     );
