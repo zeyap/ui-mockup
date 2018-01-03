@@ -8,7 +8,7 @@ class AppsPage extends React.Component {
   state = { apps: [] };
 
   componentDidMount() {
-    document.title = 'Patternfly React Boiler | Apps';
+    document.title = 'Compliance Center | Apps';
   }
 
   componentWillMount() {

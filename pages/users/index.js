@@ -8,7 +8,7 @@ class UsersPage extends React.Component {
   state = { users: [] };
 
   componentDidMount() {
-    document.title = 'Patternfly React Boiler | Users';
+    document.title = 'Compliance Center| Users';
   }
 
   componentWillMount() {

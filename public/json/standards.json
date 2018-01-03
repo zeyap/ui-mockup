@@ -1,0 +1,18 @@
+[
+  {
+    "name": "NIST 800-53: Security and Privacy Controls for Federal Information Systems and Organizations",
+    "description": "Blqqurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar. Blurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar. Blurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar. Blurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar.\n\n"
+  },
+  {
+    "name": "NIST 800-171: Controlled Unclassified Information",
+    "description": "New NIST standard for Controlled Unclassified Information"
+  },
+  {
+    "name": "United States Government National Checklist for Red Hat Enterprise Linux 7.x",
+    "description": "NIST National Checklist Program content"
+  },
+  {
+    "name": "PCI-DSS vXXX",
+    "description": "PCI is just awesome!"
+  }
+]

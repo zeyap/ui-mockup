@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import Layout from '../../components/Layout';
-import AppListView from '../../components/ListView/AppListView';
+import StandardsListView from '../../components/ListView/StandardsListView';
 import constants from '../../core/constants';
 
 class AppsPage extends React.Component {
@@ -8,26 +8,30 @@ class AppsPage extends React.Component {
   state = { apps: [] };
 
   componentDidMount() {
-    document.title = 'Patternfly React Boiler | Apps';
+    document.title = 'Compliance Center | Standards';
   }
 
   componentWillMount() {
     this.getApps();
   }
 
+  // Data stored in json/standards.json, which is defined in
+  // core/constants.js
   getApps() {
     let that = this;
-    fetch(constants.get_apps_url).then(r => r.json())
+    fetch(constants.get_standards_url).then(r => r.json())
       .then(data => {
         that.setState({apps : data})
       })
-      .catch(e => console.log("Booo"));
+      .catch(e => console.log("ERROR: Something went wrong opening standards definition"));
   }
 
   render() {
+    // The HTML is rendered from components/ListView/StandardsListView.js
     return (
       <Layout className="container-fluid container-pf-nav-pf-vertical">
-        <AppListView apps={ this.state.apps }/>
+        <StandardsListView apps={ this.state.apps }/>
+        foo
       </Layout>
     );
   }

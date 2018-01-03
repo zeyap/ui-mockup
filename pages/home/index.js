@@ -8,7 +8,7 @@ class HomePage extends React.Component {
   state = { projects: [] };
 
   componentDidMount() {
-    document.title = 'Patternfly React Boiler | Home';
+    document.title = 'Compliance Center | Home';
   }
 
   componentWillMount() {

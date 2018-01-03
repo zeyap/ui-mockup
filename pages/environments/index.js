@@ -8,7 +8,7 @@ class EnvironmentsPage extends React.Component {
   state = { wizardView: false };
 
   componentDidMount() {
-    document.title = 'Patternfly React Boiler | Environments';
+    document.title = 'Compliance Center | Environments';
   }
 
   handleClick = (event) => {

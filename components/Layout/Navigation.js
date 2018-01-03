@@ -42,40 +42,21 @@ class Navigation extends React.Component {
               </ul>
             </div>
           </li>
-          <li className={"list-group-item" + (location.pathname == '/apps' ? ' active' : '')}>
-            <Link to="/apps">
-              <span className="fa fa-shield" data-toggle="tooltip" title="Dolor"></span>
-              <span className="list-group-item-value">Apps</span>
-            </Link>
-          </li>
-          <li className={"list-group-item" + (location.pathname == '/users' ? ' active' : '')}>
-            <Link to="/users">
-              <span className="fa fa-space-shuttle" data-toggle="tooltip" title="Ipsum"></span>
-              <span className="list-group-item-value">Users</span>
-            </Link>
-
-          </li>
-          <li className={"list-group-item" + (location.pathname == '/environments' ? ' active' : '')}>
-            <Link to="/environments">
-              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Amet"></span>
-              <span className="list-group-item-value">Environments</span>
-            </Link>
-          </li>
           <li className={"list-group-item" + (location.pathname == '/standards' ? ' active' : '')}>
             <Link to="/standards">
-              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Standards"></span>
+              <span className="fa fa-university" data-toggle="tooltip" title="Standards"></span>
               <span className="list-group-item-value">Standards</span>
             </Link>
           </li>
           <li className={"list-group-item" + (location.pathname == '/certifications' ? ' active' : '')}>
             <Link to="/certifications">
-              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Certifications"></span>
+              <span className="fa fa-check-square-o" data-toggle="tooltip" title="Certifications"></span>
               <span className="list-group-item-value">Certifications</span>
             </Link>
           </li>
           <li className={"list-group-item" + (location.pathname == '/components' ? ' active' : '')}>
             <Link to="/components">
-              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Components"></span>
+              <span className="fa fa-puzzle-piece" data-toggle="tooltip" title="Components"></span>
               <span className="list-group-item-value">Components</span>
             </Link>
           </li>
@@ -87,13 +68,13 @@ class Navigation extends React.Component {
           </li>
           <li className={"list-group-item" + (location.pathname == '/reports' ? ' active' : '')}>
             <Link to="/reports">
-              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Reports"></span>
+              <span className="fa fa-pie-chart" data-toggle="tooltip" title="Reports"></span>
               <span className="list-group-item-value">Reports</span>
             </Link>
           </li>
           <li className={"list-group-item" + (location.pathname == '/documents' ? ' active' : '')}>
             <Link to="/documents">
-              <span className="fa fa-paper-plane" data-toggle="tooltip" title="Documents"></span>
+              <span className="fa fa-file-text" data-toggle="tooltip" title="Documents"></span>
               <span className="list-group-item-value">Documents</span>
             </Link>
           </li>

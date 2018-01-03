@@ -30,5 +30,29 @@
   {
     "path": "/environments",
     "page": "./pages/environments"
+  },
+  {
+    "path": "/standards",
+    "page": "./pages/standards"
+  },
+  {
+    "path": "/certifications",
+    "page": "./pages/certifications"
+  },
+  {
+    "path": "/components",
+    "page": "./pages/components"
+  },
+  {
+    "path": "/pages",
+    "page": "./pages/pages"
+  },
+  {
+    "path": "/reports",
+    "page": "./pages/reports"
+  },
+  {
+    "path": "/documents",
+    "page": "./pages/documents"
   }
 ]
