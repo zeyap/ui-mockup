@@ -8,7 +8,7 @@ class UsersPage extends React.Component {
   state = { users: [] };
 
   componentDidMount() {
-    document.title = 'Compliance Center | Documents';
+    document.title = 'Security Central | Documents';
   }
 
   componentWillMount() {

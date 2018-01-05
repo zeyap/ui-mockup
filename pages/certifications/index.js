@@ -8,7 +8,7 @@ class AppsPage extends React.Component {
   state = { apps: [] };
 
   componentDidMount() {
-    document.title = 'Compliance Center | Certifications';
+    document.title = 'Security Central | Certifications';
   }
 
   componentWillMount() {

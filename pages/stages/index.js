@@ -5,7 +5,7 @@ import EmptyState from '../../components/EmptyState/EmptyState';
 class StagesPage extends React.Component {
 
   componentDidMount() {
-    document.title = 'Compliance Center | Stages';
+    document.title = 'Security Central | Stages';
   }
 
   render() {

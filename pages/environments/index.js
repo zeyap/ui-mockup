@@ -8,7 +8,7 @@ class EnvironmentsPage extends React.Component {
   state = { wizardView: false };
 
   componentDidMount() {
-    document.title = 'Compliance Center | Environments';
+    document.title = 'Security Central | Environments';
   }
 
   handleClick = (event) => {

@@ -8,7 +8,7 @@ class HomePage extends React.Component {
   state = { projects: [] };
 
   componentDidMount() {
-    document.title = 'Compliance Center | Home';
+    document.title = 'Security Central | Home';
   }
 
   componentWillMount() {
