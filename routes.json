@@ -54,5 +54,9 @@
   {
     "path": "/documents",
     "page": "./pages/documents"
+  },
+  {
+    "path": "/dashboard",
+    "page": "./pages/dashboard"
   }
 ]
