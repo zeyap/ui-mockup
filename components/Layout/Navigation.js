@@ -98,6 +98,18 @@ class Navigation extends React.Component {
                     <span className="list-group-item-value">Documents</span>
                   </Link>
                 </li>
+	        <li className={"list-group-item" + (location.pathname == '/scanning' ? ' active' : '')}>
+                  <Link to="/documents">
+                    <span className="fa fa-search" data-toggle="tooltip" title="Scan"></span>
+                    <span className="list-group-item-value">Scan</span>
+                  </Link>
+                </li>
+	        <li className={"list-group-item" + (location.pathname == '/workbench' ? ' active' : '')}>
+                  <Link to="/documents">
+                    <span className="fa pficon-settings" data-toggle="tooltip" title="Workbench"></span>
+                    <span className="list-group-item-value">Workbench</span>
+                  </Link>
+                </li>
               </ul>
             </div>
           </li>
@@ -168,12 +180,6 @@ class Navigation extends React.Component {
                 </li>
               </ul>
             </div>
-          </li>
-          <li className={"list-group-item " + (location.pathname == '/comms' ? ' active' : '')}>
-            <Link to="/comms">
-              <span className="fa fa-envelope" data-toggle="tooltip"></span>
-              <span className="list-group-item-value">Communications</span>
-            </Link>
           </li>
 	  <li className={"list-group-item " + (location.pathname == '/reports' ? ' active' : '')}>
             <Link to="/reports">
