@@ -144,6 +144,13 @@ $ node run build                # Or, `node run build --release` for production 
 * [History](https://github.com/mjackson/history) — HTML5 History API wrapper library that handle navigation in single-page apps
 
 
+### Roles
+@eunicedju - front end
+@hannahdu - front end
+@zeyap - database
+@jerviscz - database
+
+
 ### License
 
 This source code is licensed under the MIT license found in the [LICENSE.txt](https://github.com/priley86/patternfly-react-starter/blob/master/LICENSE.txt) file.
