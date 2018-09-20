@@ -145,9 +145,9 @@ $ node run build                # Or, `node run build --release` for production 
 
 
 ### Roles
-@eunicedju - front end
 @hannahdu - front end
-@zeyap - database
+@zeyap - front end
+@eunicedju - database
 @jerviscz - database
 
 
