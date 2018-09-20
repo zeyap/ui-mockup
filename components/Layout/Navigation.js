@@ -22,38 +22,13 @@ class Navigation extends React.Component {
     return (
       <div className="nav-pf-vertical">
         <ul className="list-group">
-	  <li className={"list-group-item" + (homeRoutes.indexOf(location.pathname) >= 0 ? ' active' : '')}>
+          <li className={"list-group-item" + (homeRoutes.indexOf(location.pathname) >= 0 ? ' active' : '')}>
             <Link to="/dashboard">
               <span className="fa fa-dashboard" data-toggle="tooltip" title="Dashboard"></span>
               <span className="list-group-item-value">Dashboard</span>
             </Link>
           </li>
-          <li className={"list-group-item secondary-nav-item-pf" + (auditRoutes.indexOf(location.pathname) >= 0 ? ' active' : '')}
-              data-target="#auditing-secondary">
-            <a>
-              <span className="fa pficon-screen" data-toggle="tooltip"></span>
-              <span className="list-group-item-value">Auditing</span>
-            </a>
-            <div id="-secondary" className="nav-pf-secondary-nav">
-              <ul className="list-group">
-                <li className={"list-group-item" + (location.pathname == '/discover' ? ' active' : '')}>
-                  <Link to="/discover">
-                    <span className="list-group-item-value">Discover</span>
-                  </Link>
-                </li>
-                <li className={"list-group-item " + (location.pathname == '/visualize' ? ' active' : '')}>
-                  <Link to="/visualize">
-                    <span className="list-group-item-value">Visualize</span>
-                  </Link>
-                </li>
-                <li className={"list-group-item " + (location.pathname == '/timeline' ? ' active' : '')}>
-                  <Link to="/timeline">
-                    <span className="list-group-item-value">Timeline</span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </li>
+        
           <li className={"list-group-item secondary-nav-item-pf" + (complianceRoutes.indexOf(location.pathname) >= 0 ? ' active' : '')}
               data-target="#compliance-secondary">
             <a>
@@ -104,7 +79,7 @@ class Navigation extends React.Component {
                     <span className="list-group-item-value">Scan</span>
                   </Link>
                 </li>
-	        <li className={"list-group-item" + (location.pathname == '/workbench' ? ' active' : '')}>
+	              <li className={"list-group-item" + (location.pathname == '/workbench' ? ' active' : '')}>
                   <Link to="/documents">
                     <span className="fa pficon-settings" data-toggle="tooltip" title="Workbench"></span>
                     <span className="list-group-item-value">Workbench</span>
@@ -113,84 +88,11 @@ class Navigation extends React.Component {
               </ul>
             </div>
           </li>
-	  <li className={"list-group-item secondary-nav-item-pf" + (protectionRoutes.indexOf(location.pathname) >= 0 ? ' active' : '')}
-              data-target="#protection-secondary">
-            <a>
-              <span className="fa fa-shield" data-toggle="tooltip"></span>
-              <span className="list-group-item-value">Protection</span>
-            </a>
-            <div id="-secondary" className="nav-pf-secondary-nav">
-              <ul className="list-group">
-                <li className={"list-group-item" + (location.pathname == '/media' ? ' active' : '')}>
-                  <Link to="/media">
-                    <span className="list-group-item-value">Media Control</span>
-                  </Link>
-                </li>
-                <li className={"list-group-item " + (location.pathname == '/ids' ? ' active' : '')}>
-                  <Link to="/ids">
-                    <span className="list-group-item-value">Instrusion Detection</span>
-                  </Link>
-                </li>
-                <li className={"list-group-item " + (location.pathname == '/selinux' ? ' active' : '')}>
-                  <Link to="/selinux">
-                    <span className="list-group-item-value">SELinux Policies</span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </li>
-	  <li className={"list-group-item secondary-nav-item-pf" + (codeRoutes.indexOf(location.pathname) >= 0 ? ' active' : '')}
-              data-target="#code-secondary">
-            <a>
-              <span className="fa fa-bug" data-toggle="tooltip"></span>
-              <span className="list-group-item-value">Code Analysis</span>
-            </a>
-            <div id="-secondary" className="nav-pf-secondary-nav">
-              <ul className="list-group">
-                <li className={"list-group-item" + (location.pathname == '/code' ? ' active' : '')}>
-                  <Link to="/code">
-                    <span className="list-group-item-value">Scan</span>
-                  </Link>
-                </li>
-                <li className={"list-group-item " + (location.pathname == '/analysis' ? ' active' : '')}>
-                  <Link to="/analysis">
-                    <span className="list-group-item-value">Analysis</span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </li>
-	  <li className={"list-group-item secondary-nav-item-pf" + (pinRoutes.indexOf(location.pathname) >= 0 ? ' active' : '')}
-              data-target="#pin-secondary">
-            <a>
-              <span className="fa pficon-topology" data-toggle="tooltip"></span>
-              <span className="list-group-item-value">PIN Testing</span>
-            </a>
-            <div id="-secondary" className="nav-pf-secondary-nav">
-              <ul className="list-group">
-                <li className={"list-group-item" + (location.pathname == '/' ? ' active' : '')}>
-                  <Link to="/media">
-                    <span className="list-group-item-value">Scan</span>
-                  </Link>
-                </li>
-                <li className={"list-group-item " + (location.pathname == '/ids' ? ' active' : '')}>
-                  <Link to="/ids">
-                    <span className="list-group-item-value">Analysis</span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </li>
+	       
 	  <li className={"list-group-item " + (location.pathname == '/reports' ? ' active' : '')}>
             <Link to="/reports">
      	      <span className="fa fa-pie-chart" data-toggle="tooltip"></span>
               <span className="list-group-item-value">Reports</span>
-            </Link>
-          </li>
-          <li className={"list-group-item " + (location.pathname == '/config' ? ' active' : '')}>
-            <Link to="/config">
-	      <span className="fa pficon-settings" data-toggle="tooltip"></span>
-              <span className="list-group-item-value">Settings</span>
             </Link>
           </li>
         </ul>
