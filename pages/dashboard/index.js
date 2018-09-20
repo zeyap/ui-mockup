@@ -27,8 +27,8 @@ class HomePage extends React.Component {
   render() {
     return (
       <Layout className="container-fluid container-pf-nav-pf-vertical">
-        <ProjectListView projects={ this.state.projects }/>
-      </Layout>
+              <ProjectListView projects={ this.state.projects }/>
+      </Layout> 
     );
   }
 
