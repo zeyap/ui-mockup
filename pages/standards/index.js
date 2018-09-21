@@ -31,7 +31,6 @@ class AppsPage extends React.Component {
     return (
       <Layout className="container-fluid container-pf-nav-pf-vertical">
         <StandardsListView apps={ this.state.apps }/>
-        foo
       </Layout>
     );
   }
