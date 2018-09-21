@@ -66,20 +66,20 @@ class StandardsListView extends React.Component {
               </div>
               <div className="list-view-pf-additional-info">
                 <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-screen"></span>
-                  <strong>8</strong> Hosts
+                  <span className="pficon pficon-orders"></span>
+                  <strong>350</strong> Security Controls
                 </div>
                 <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-cluster"></span>
-                  <strong>6</strong> Clusters
+                  <span className="pficon pficon-ok"></span>
+                  <strong>300</strong> Satisfied
                 </div>
                 <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-container-node"></span>
-                  <strong>10</strong> Nodes
+                  <span className="pficon pficon-warning-triangle-o"></span>
+                  <strong>15</strong> Partially Satisfied
                 </div>
                 <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-image"></span>
-                  <strong>8</strong> Images
+                  <span className="pficon pficon-error-circle-o"></span>
+                  <strong>35</strong> Non-compliant Items
                 </div>
               </div>
             </div>
@@ -101,15 +101,15 @@ class StandardsListView extends React.Component {
             <div className="col-md-9">
               <dl className="dl-horizontal">
                 <dt>Control Familes:</dt>
-                <dd>16</dd>
+                <dd>##</dd>
                 <dt>Total Controls: </dt>
-                <dd>1,000,000</dd>
+                <dd>##</dd>
                 <dt>Inherited Compliance: </dt>
-                <dd>10</dd>
+                <dd>##</dd>
                 <dt>Procedural Controls: </dt>
-                <dd>103</dd>
+                <dd>##</dd>
                 <dt>Technical Controls: </dt>
-                <dd>560</dd>
+                <dd>##</dd>
               </dl>
 
             </div>
