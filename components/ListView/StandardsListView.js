@@ -2,6 +2,9 @@ import React, { PropTypes } from 'react';
 
 class StandardsListView extends React.Component {
 
+  constructor(props){
+    super(props);
+  }
   componentDidMount() {
     this.bindExpand();
   }
@@ -39,12 +42,12 @@ class StandardsListView extends React.Component {
   }
 
   render() {
-    const { apps } = this.props; // eslint-disable-line no-use-before-define
-
+    // eslint-disable-line no-use-before-define
+    
     return (
       <div className="list-group list-view-pf list-view-pf-view">
 
-        {apps.map((app,i) =>
+        {this.props.apps.map((app,i) =>
         <div className="list-group-item" key={i}>
 
           <div className="list-group-item-header">
@@ -67,19 +70,19 @@ class StandardsListView extends React.Component {
               <div className="list-view-pf-additional-info">
                 <div className="list-view-pf-additional-info-item">
                   <span className="pficon pficon-orders"></span>
-                  <strong>350</strong> Security Controls
+                  <strong>{ app.totalControls }</strong> Security Controls
                 </div>
                 <div className="list-view-pf-additional-info-item">
                   <span className="pficon pficon-ok"></span>
-                  <strong>300</strong> Satisfied
+                  <strong>{ app.satisfied }</strong> Satisfied
                 </div>
                 <div className="list-view-pf-additional-info-item">
                   <span className="pficon pficon-warning-triangle-o"></span>
-                  <strong>15</strong> Partially Satisfied
+                  <strong>{ app.partially }</strong> Partially Satisfied	
                 </div>
                 <div className="list-view-pf-additional-info-item">
                   <span className="pficon pficon-error-circle-o"></span>
-                  <strong>35</strong> Non-compliant Items
+                  <strong>{ app.noncompliant }</strong> Non-compliant Items
                 </div>
               </div>
             </div>
@@ -101,15 +104,15 @@ class StandardsListView extends React.Component {
             <div className="col-md-9">
               <dl className="dl-horizontal">
                 <dt>Control Familes:</dt>
-                <dd>##</dd>
+                <dd>{app.controlFamilies}</dd>
                 <dt>Total Controls: </dt>
-                <dd>##</dd>
+                <dd>{app.totalControls}</dd>
                 <dt>Inherited Compliance: </dt>
-                <dd>##</dd>
+                <dd>{app.inheritedCompliance}</dd>
                 <dt>Procedural Controls: </dt>
-                <dd>##</dd>
+                <dd>{app.proceduralControls}</dd>
                 <dt>Technical Controls: </dt>
-                <dd>##</dd>
+                <dd>{app.technicalControls}</dd>
               </dl>
 
             </div>

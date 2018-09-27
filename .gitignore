@@ -15,3 +15,4 @@ firebase-debug.log
 .idea
 
 firefox_root/
+.DS_Store

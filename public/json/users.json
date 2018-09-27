@@ -3,7 +3,8 @@
     "name": "Erlich Bachman"
   },
   {
-    "name": "Gilfoyle"
+    "name": "Gilfoyle",
+    "compliance_url": "gilfoyle.json"
   },
   {
     "name": "Richard Hendriks"
