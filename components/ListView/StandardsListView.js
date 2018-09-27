@@ -2,6 +2,9 @@ import React, { PropTypes } from 'react';
 
 class StandardsListView extends React.Component {
 
+  constructor(props){
+    super(props);
+  }
   componentDidMount() {
     this.bindExpand();
   }
@@ -39,12 +42,17 @@ class StandardsListView extends React.Component {
   }
 
   render() {
-    const { apps } = this.props; // eslint-disable-line no-use-before-define
-
+    // eslint-disable-line no-use-before-define
+    this.props.apps.forEach((item)=>{
+      for(let attr in item){
+        console.log(attr)
+      }
+    })
+    
     return (
       <div className="list-group list-view-pf list-view-pf-view">
 
-        {apps.map((app,i) =>
+        {this.props.apps.map((app,i) =>
         <div className="list-group-item" key={i}>
 
           <div className="list-group-item-header">
@@ -101,15 +109,15 @@ class StandardsListView extends React.Component {
             <div className="col-md-9">
               <dl className="dl-horizontal">
                 <dt>Control Familes:</dt>
-                <dd>16</dd>
+                <dd>{app.controlFamilies}</dd>
                 <dt>Total Controls: </dt>
-                <dd>1,000,000</dd>
+                <dd>{app.totalControls}</dd>
                 <dt>Inherited Compliance: </dt>
-                <dd>10</dd>
+                <dd>{app.inheritedCompliance}</dd>
                 <dt>Procedural Controls: </dt>
-                <dd>103</dd>
+                <dd>{app.proceduralControls}</dd>
                 <dt>Technical Controls: </dt>
-                <dd>560</dd>
+                <dd>{app.technicalControls}</dd>
               </dl>
 
             </div>
