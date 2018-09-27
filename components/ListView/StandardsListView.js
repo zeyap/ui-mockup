@@ -43,11 +43,6 @@ class StandardsListView extends React.Component {
 
   render() {
     // eslint-disable-line no-use-before-define
-    this.props.apps.forEach((item)=>{
-      for(let attr in item){
-        console.log(attr)
-      }
-    })
     
     return (
       <div className="list-group list-view-pf list-view-pf-view">
@@ -74,20 +69,20 @@ class StandardsListView extends React.Component {
               </div>
               <div className="list-view-pf-additional-info">
                 <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-screen"></span>
-                  <strong>8</strong> Hosts
+                  <span className="pficon pficon-orders"></span>
+                  <strong>{ app.totalControls }</strong> Security Controls
                 </div>
                 <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-cluster"></span>
-                  <strong>6</strong> Clusters
+                  <span className="pficon pficon-ok"></span>
+                  <strong>{ app.satisfied }</strong> Satisfied
                 </div>
                 <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-container-node"></span>
-                  <strong>10</strong> Nodes
+                  <span className="pficon pficon-warning-triangle-o"></span>
+                  <strong>{ app.partially }</strong> Partially Satisfied	
                 </div>
                 <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-image"></span>
-                  <strong>8</strong> Images
+                  <span className="pficon pficon-error-circle-o"></span>
+                  <strong>{ app.noncompliant }</strong> Non-compliant Items
                 </div>
               </div>
             </div>

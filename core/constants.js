@@ -8,9 +8,12 @@ const constants = {
   get_components_url : 'json/components.json',
   get_projects_url: 'json/projects.json',
   get_users_url: 'json/users.json',
-  standards: {
-    "NIST 800-171":"opencontrols/standards/nist-800-53-latest.json"
+  standards_url: {
+    "NIST 800-53":"opencontrols/standards/nist-800-53-latest.json",
+    "tsc-2017":"opencontrols/standards/tsc-2017.json",
+    "pci-dss":"opencontrols/standards/pci-dss.json"
   },
+  current_user_id:1
 };
 
 export default constants;

@@ -1,20 +1,20 @@
 [
   {
-    "name": "NIST 800-53: Security and Privacy Controls for Federal Information Systems and Organizations",
-    "id":"NIST 800-53",
-    "description": "Blqqurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar. Blurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar. Blurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar. Blurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar.\n\n"
-  },
-  {
     "name": "NIST 800-171: Controlled Unclassified Information",
     "id":"NIST 800-171",
     "description": "New NIST standard for Controlled Unclassified Information"
-  },
-  {
+  },{
+    "name": "NIST 800-53: Security and Privacy Controls for Federal Information Systems and Organizations",
+    "id":"NIST 800-53",
+    "description": "Blqqurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar. Blurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar. Blurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar. Blurb about NIST. A detailed description of the NIST 800-53 standard can be read from the OpenControl YAML. Foo foo foo foo foo bar bar bar bar.\n\n"
+  },{
     "name": "United States Government National Checklist for Red Hat Enterprise Linux 7.x",
+    "id":"tsc-2017",
     "description": "NIST National Checklist Program content"
   },
   {
     "name": "PCI-DSS vXXX",
+    "id":"pci-dss",
     "description": "PCI is just awesome!"
   }
 ]
