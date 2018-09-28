@@ -78,7 +78,7 @@ class StandardsListView extends React.Component {
                 </div>
                 <div className="list-view-pf-additional-info-item">
                   <span className="pficon pficon-warning-triangle-o"></span>
-                  <strong>{ app.partially }</strong> Partially Satisfied	
+                  <strong>{ app.partial }</strong> Partially Satisfied	
                 </div>
                 <div className="list-view-pf-additional-info-item">
                   <span className="pficon pficon-error-circle-o"></span>

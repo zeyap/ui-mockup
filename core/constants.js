@@ -12,8 +12,7 @@ const constants = {
     "NIST 800-53":"opencontrols/standards/nist-800-53-latest.json",
     "tsc-2017":"opencontrols/standards/tsc-2017.json",
     "pci-dss":"opencontrols/standards/pci-dss.json"
-  },
-  current_user_id:1
+  }
 };
 
 export default constants;
