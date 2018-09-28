@@ -1,9 +1,11 @@
 [
   {
-    "name": "Red Hat OpenShift Container Platform v3"
+    "name": "Red Hat OpenShift Container Platform v3",
+    "url":"opencontrols/components/ocp3.json"
   },
   {
-    "name": "Red Hat OpenStack Platform 13"
+    "name": "Red Hat OpenStack Platform 13",
+    "url":"opencontrols/components/osp13.json"
   },
   {
     "name": "Red Hat Enterprise Linux v7"
