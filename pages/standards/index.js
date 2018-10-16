@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Layout from '../../components/Layout';
 import StandardsListView from '../../components/ListView/StandardsListView';
 import constants from '../../core/constants';
-import {addStandardControlFamilies, getComplianceData} from '../../utils/open-control-utils.js';
+import {addStandardsControlFamilies, getStandardsComplianceData} from '../../utils/open-control-utils.js';
 
 class AppsPage extends React.Component {
   constructor(props){
@@ -12,14 +12,14 @@ class AppsPage extends React.Component {
 
     // For updating this.state.apps when Process in getApps() complete with delay
     this.standardsUpdateLoopId = setInterval(
-      (function(){
-        if(this.apps.every((app)=>{
-          return (app.controlFamilies!==undefined)
-        })){
-          this.setState({apps : this.apps});
-          clearInterval(this.standardsUpdateLoopId);
-        }
-      }).bind(this),500);
+    (function(){
+      if(this.apps.every((app)=>{
+        return (app.controlFamilies!==undefined)
+      })){
+        this.setState({apps : this.apps});
+        clearInterval(this.standardsUpdateLoopId);
+      }
+    }).bind(this),500);
     
   }
 
@@ -37,10 +37,10 @@ class AppsPage extends React.Component {
     let that = this;
     fetch(constants.get_standards_url).then(r => r.json())
       .then(standards => {
-        return addStandardControlFamilies(standards);
+        return addStandardsControlFamilies(standards);
       })
       .then(standards=>{
-        return getComplianceData(standards);
+        return getStandardsComplianceData(standards);
       })
       .then((result)=>{
         // console.log('result',result)
