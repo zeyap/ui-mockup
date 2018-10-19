@@ -8,19 +8,7 @@ class AppsPage extends React.Component {
   constructor(props){
     super(props);
     this.state = { apps: [] };
-    this.apps = [];
-
-    // For updating this.state.apps when Process in getApps() complete with delay
-    this.standardsUpdateLoopId = setInterval(
-    (function(){
-      if(this.apps.every((app)=>{
-        return (app.controlFamilies!==undefined)
-      })){
-        this.setState({apps : this.apps});
-        clearInterval(this.standardsUpdateLoopId);
-      }
-    }).bind(this),500);
-    
+    this.apps = []; 
   }
 
   componentDidMount() {

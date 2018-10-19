@@ -9,7 +9,14 @@ constants = constants.default;
 
 Array.prototype.forEachConsecutively = function(fn){
     let that = this;
-    return fn(that,0,fn);
+    let callback = function(arr,i,callback,memo){
+        if(i<arr.length-1){
+            return fn(arr, i+1,callback);
+        }else{
+            return memo;
+        }
+    }
+    return fn(that,0,callback);
 }
 
 /**
@@ -42,11 +49,7 @@ module.exports.addStandardsControlFamilies = function(standards){
                     }
                 }
                 // console.log(i, arr.length-1)
-                if(i<arr.length-1){
-                    return callback(arr, i+1,callback);
-                }else{
-                    return standards;
-                }
+                return callback(arr, i,callback,standards);
                 
             })
     })
@@ -71,7 +74,7 @@ var caseHyphenInsensitive = function(key){
 * @author zeyap
 */
 module.exports.getStandardsComplianceData = function(standards){
-    console.log(standards)
+    // console.log(standards)
     // return new Promise((_resolve,_reject)=>{
         var standardMap={} //standard_key to index in array 'standards'
         for(let i=0;i<standards.length;i++){
@@ -112,11 +115,9 @@ module.exports.getStandardsComplianceData = function(standards){
                             break;
                         }
                     })
-                    if(i+1<arr.length){
-                        return callback(arr, i+1,callback);
-                    }else{
-                        return standards;
-                    }
+                    
+                    return callback(arr, i,callback,standards);
+                    
                 })
                 
             })
@@ -143,7 +144,6 @@ module.exports.getCertificationCompliance = function(certifications){
                     }
                 })
                 .then((doc)=>{
-                    // console.log(doc)
                     if(doc !== null)
                     doc.satisfies.forEach((item)=>{
                         standardsCompliance[item["standard_key"]] = standardsCompliance[item["standard_key"]]||{};
@@ -167,22 +167,20 @@ module.exports.getCertificationCompliance = function(certifications){
                         }
                     })
                     // console.log(1)
-                    if(i+1<arr.length){
-                        return callback(arr, i+1,callback);
-                    }else{
-                        return standardsCompliance;
-                    }
+                    
+                    return callback(arr, i,callback,standardsCompliance);
                     
                 })
             })
         
         })
         .then(standardsCompliance=>{
-            // console.log(2)
             return certifications.forEachConsecutively(function(arr,i,callback){
                 let _ = arr[i];
                 if(_.satisfied===undefined){
                     _ = Object.assign(_,{
+                        controlFamilies: 0, totalControls: 0, inheritedCompliance: 0, proceduralControls: 0, technicalControls: 0,
+
                         satisfied: 0,
                         partial: 0,
                         noncompliant: 0
@@ -200,6 +198,7 @@ module.exports.getCertificationCompliance = function(certifications){
                         // console.log(standardsCompliance, standardKey)
                         if(standardsCompliance[standardKey]===undefined) break;
                         for(let controlKey in doc.standards[standardKey]){
+                            _.totalControls++;
                             switch(standardsCompliance[standardKey][controlKey]){
                                 case COMPLETE:
                                 _.satisfied++;
@@ -213,11 +212,7 @@ module.exports.getCertificationCompliance = function(certifications){
                             }
                         }
                     }
-                    if(i+1<arr.length){
-                        return callback(arr, i+1,callback);
-                    }else{
-                        return certifications;
-                    }
+                    return callback(arr, i+1,callback,certifications);
                 })
         });
     })
