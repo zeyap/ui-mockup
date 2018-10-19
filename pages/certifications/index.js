@@ -25,7 +25,6 @@ class AppsPage extends React.Component {
       return getCertificationCompliance(certifications);
     })
     .then(certifications => {
-      console.log(certifications)
       //collect all standards among certifications
       //get compliance
       //put back to certifications

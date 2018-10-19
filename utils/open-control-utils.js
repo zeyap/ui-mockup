@@ -1,6 +1,5 @@
 let constants = require('../core/constants');
 constants = constants.default;
-var yaml = require('js-yaml');
 
 /**
 * A helper function to loop through an array and output Promise object
@@ -9,12 +8,8 @@ var yaml = require('js-yaml');
 
 
 Array.prototype.forEachConsecutively = function(fn){
-    return this.reduce((p, _, i) => {
-        // console.log(p,_)
-        return p.then(_=>new Promise((resolve,reject)=>{
-            fn(this[i],i,resolve, reject);
-        }))
-    }, Promise.resolve())
+    let that = this;
+    return fn(that,0,fn);
 }
 
 /**
@@ -22,8 +17,9 @@ Array.prototype.forEachConsecutively = function(fn){
 * @author zeyap
 */
 module.exports.addStandardsControlFamilies = function(standards){
-    return standards.forEachConsecutively(function(_,i,resolve,reject){
-        fetch(constants.standards_url[_.key]).then(r=>{
+    return standards.forEachConsecutively(function(arr,i,callback){
+        let _ = arr[i];
+        return fetch(constants.standards_url[_.key]).then(r=>{
                 if(r.url.indexOf('undefined')===-1){
                     return r.json();
                 }else{
@@ -44,20 +40,16 @@ module.exports.addStandardsControlFamilies = function(standards){
                         }
                         _.totalControls++;
                     }
-
                 }
-                resolve(standards);
-            }).catch(e=>{
-                console.log(e)
-                reject('There are issues when fetching standards');
+                // console.log(i, arr.length-1)
+                if(i<arr.length-1){
+                    return callback(arr, i+1,callback);
+                }else{
+                    return standards;
+                }
+                
             })
     })
-    // .then(standards=>{
-    //     standards.forEach((s)=>{
-    //         console.log(s);
-    //     })
-        
-    // })
 }
 
 
@@ -79,101 +71,116 @@ var caseHyphenInsensitive = function(key){
 * @author zeyap
 */
 module.exports.getStandardsComplianceData = function(standards){
-    return new Promise((_resolve,_reject)=>{
+    console.log(standards)
+    // return new Promise((_resolve,_reject)=>{
         var standardMap={} //standard_key to index in array 'standards'
         for(let i=0;i<standards.length;i++){
             if(standardMap[standards[i].key]!==undefined)continue;
             standardMap[standards[i].key] = i;
         }
-        fetch(constants.get_components_url).then(r=>r.json())
-        .then(components=>components.forEachConsecutively(function(_,i,resolve,reject){
-            fetch(_.url).then(r=>{
-                if(r.url.indexOf('undefined') >=0) return null;
-                else{
-                    return r.json()
-                }
-            })
-            .then((doc)=>{
-                // console.log(doc)
-                if(doc === null) return null;
-                doc.satisfies.forEach((item)=>{
-                    let targetStandard = standards[standardMap[caseHyphenInsensitive(item.standard_key)]];
-                    if(targetStandard.satisfied===undefined){
-                        targetStandard = Object.assign(targetStandard,{
-                            satisfied: 0,
-                            partial: 0,
-                            noncompliant: targetStandard.totalControls
-                        })
-                    }
-                    switch(item.implementation_status){
-                        case 'complete':
-                        targetStandard.satisfied++;
-                        targetStandard.noncompliant--;
-                        break;
-                        case 'partial':
-                        targetStandard.partial++;
-                        targetStandard.noncompliant--;
-                        break;
-                        default: //'unknown', 'planned', 'not applicable'
-                        break;
+        return fetch(constants.get_components_url).then(r=>r.json())
+        .then(components=>{
+            return components.forEachConsecutively(function(arr,i,callback){
+                let _ = arr[i];
+                return fetch(_.url).then(r=>{
+                    if(r.url.indexOf('undefined') >=0) return null;
+                    else{
+                        return r.json()
                     }
                 })
-                resolve(standards);
+                .then((doc)=>{
+                    if(doc !== null)
+                    doc.satisfies.forEach((item)=>{
+                        let targetStandard = standards[standardMap[caseHyphenInsensitive(item.standard_key)]];
+                        if(targetStandard.satisfied===undefined){
+                            targetStandard = Object.assign(targetStandard,{
+                                satisfied: 0,
+                                partial: 0,
+                                noncompliant: targetStandard.totalControls
+                            })
+                        }
+                        switch(item.implementation_status){
+                            case 'complete':
+                            targetStandard.satisfied++;
+                            targetStandard.noncompliant--;
+                            break;
+                            case 'partial':
+                            targetStandard.partial++;
+                            targetStandard.noncompliant--;
+                            break;
+                            default: //'unknown', 'planned', 'not applicable'
+                            break;
+                        }
+                    })
+                    if(i+1<arr.length){
+                        return callback(arr, i+1,callback);
+                    }else{
+                        return standards;
+                    }
+                })
+                
             })
-            _resolve(standards);
-        })
-        )
+    })
         // .catch(e=>{
         //     console.log(e)
         //     _reject('There are issues when fetching components');
         // })
-    })
+    // })
 }
 
 const [COMPLETE, PARTIAL, NONCOMPLIANT] = [1,2,3];
 module.exports.getCertificationCompliance = function(certifications){
     let standardsCompliance={};
-    return new Promise((_resolve,_reject)=>{
-        fetch(constants.get_components_url).then(r=>r.json())
-        .then(components=>components.forEachConsecutively(function(_,i,resolve,reject){
-            fetch(_.url).then(r=>{
-                if(r.url.indexOf('undefined') >=0) return null;
-                else{
-                    return r.json()
-                }
-            })
-            .then((doc)=>{
-                // console.log(doc)
-                if(doc === null) return null;
-                doc.satisfies.forEach((item)=>{
-                    standardsCompliance[item["standard_key"]] = standardsCompliance[item["standard_key"]]||{};
-                    let standard = standardsCompliance[item["standard_key"]];
-                    let control = item["control_key"];
-                    let status = item["implementation_status"];
-                    switch(status){
-                        case 'complete':
-                        standard[control]=COMPLETE;
-                        break;
-                        case 'partial':
-                        if(!standard[control]||standard[control]>PARTIAL){
-                            standard[control]=PARTIAL;
-                        }
-                        break;
-                        default:
-                        if(!standard[control]){
-                            standard[control]=NONCOMPLIANT;
-                        }
-                        break;
+    // return new Promise((_resolve,_reject)=>{
+        return fetch(constants.get_components_url).then(r=>r.json())
+        .then(components=>{
+            return components.forEachConsecutively(function(arr,i,callback){
+                let _ = arr[i];
+                return fetch(_.url).then(r=>{
+                    if(r.url.indexOf('undefined') >=0) return null;
+                    else{
+                        return r.json()
                     }
                 })
-                // console.log(1)
-                // resolve(standardsCompliance);
+                .then((doc)=>{
+                    // console.log(doc)
+                    if(doc !== null)
+                    doc.satisfies.forEach((item)=>{
+                        standardsCompliance[item["standard_key"]] = standardsCompliance[item["standard_key"]]||{};
+                        let standard = standardsCompliance[item["standard_key"]];
+                        let control = item["control_key"];
+                        let status = item["implementation_status"];
+                        switch(status){
+                            case 'complete':
+                            standard[control]=COMPLETE;
+                            break;
+                            case 'partial':
+                            if(!standard[control]||standard[control]>PARTIAL){
+                                standard[control]=PARTIAL;
+                            }
+                            break;
+                            default:
+                            if(!standard[control]){
+                                standard[control]=NONCOMPLIANT;
+                            }
+                            break;
+                        }
+                    })
+                    // console.log(1)
+                    if(i+1<arr.length){
+                        return callback(arr, i+1,callback);
+                    }else{
+                        return standardsCompliance;
+                    }
+                    
+                })
             })
-            resolve(standardsCompliance);
-        }))
+        
+        })
         .then(standardsCompliance=>{
             // console.log(2)
-            return certifications.forEachConsecutively(function(_,i,resolve,reject){
+            return certifications.forEachConsecutively(function(arr,i,callback){
+                let _ = arr[i];
                 if(_.satisfied===undefined){
                     _ = Object.assign(_,{
                         satisfied: 0,
@@ -181,13 +188,13 @@ module.exports.getCertificationCompliance = function(certifications){
                         noncompliant: 0
                     })
                 }
-                fetch(_.url).then(r=>{
+                return fetch(_.url).then(r=>{
                     if(r.url.indexOf('undefined') >=0) return null;
                     else{
                         return r.json()
                     }
                 }).then((doc)=>{
-                    if(doc === null) return null;
+                    if(doc !== null)
                     for(let standardKey in doc.standards){
                         
                         // console.log(standardsCompliance, standardKey)
@@ -206,18 +213,13 @@ module.exports.getCertificationCompliance = function(certifications){
                             }
                         }
                     }
-                    // resolve(certifications);
+                    if(i+1<arr.length){
+                        return callback(arr, i+1,callback);
+                    }else{
+                        return certifications;
+                    }
                 })
-                resolve(certifications);
-        })})
-        .then((certifications)=>{
-            
-            _resolve(certifications);
-        })
-        // .catch(e=>{
-        //     console.log(e)
-        //     _reject('There are issues when fetching components');
-        // })
+        });
     })
     
 }
