@@ -129,7 +129,19 @@ module.exports.getStandardsComplianceData = function(standards){
     // })
 }
 
-const [COMPLETE, PARTIAL, NONCOMPLIANT] = [1,2,3];
+let formatComponent = function(doc, standardsCompliance){
+    if(doc !== null)
+                    doc.satisfies.forEach((item)=>{
+                        standardsCompliance[item["standard_key"]] = standardsCompliance[item["standard_key"]]||{};
+                        let standard = standardsCompliance[item["standard_key"]];
+                        let control = item["control_key"];
+                        let status = item["implementation_status"];
+                        standard[control] = {};
+                        standard[control] = Object.assign(standard[control],item);
+                    })
+}
+
+
 module.exports.getCertificationCompliance = function(certifications){
     let standardsCompliance={};
     // return new Promise((_resolve,_reject)=>{
@@ -144,30 +156,7 @@ module.exports.getCertificationCompliance = function(certifications){
                     }
                 })
                 .then((doc)=>{
-                    if(doc !== null)
-                    doc.satisfies.forEach((item)=>{
-                        standardsCompliance[item["standard_key"]] = standardsCompliance[item["standard_key"]]||{};
-                        let standard = standardsCompliance[item["standard_key"]];
-                        let control = item["control_key"];
-                        let status = item["implementation_status"];
-                        switch(status){
-                            case 'complete':
-                            standard[control]=COMPLETE;
-                            break;
-                            case 'partial':
-                            if(!standard[control]||standard[control]>PARTIAL){
-                                standard[control]=PARTIAL;
-                            }
-                            break;
-                            default:
-                            if(!standard[control]){
-                                standard[control]=NONCOMPLIANT;
-                            }
-                            break;
-                        }
-                    })
-                    // console.log(1)
-                    
+                    formatComponent(doc, standardsCompliance);    
                     return callback(arr, i,callback,standardsCompliance);
                     
                 })
@@ -199,11 +188,12 @@ module.exports.getCertificationCompliance = function(certifications){
                         if(standardsCompliance[standardKey]===undefined) break;
                         for(let controlKey in doc.standards[standardKey]){
                             _.totalControls++;
-                            switch(standardsCompliance[standardKey][controlKey]){
-                                case COMPLETE:
+                            if(standardsCompliance[standardKey][controlKey]==undefined)continue;
+                            switch(standardsCompliance[standardKey][controlKey].implementation_status){
+                                case 'complete':
                                 _.satisfied++;
                                 break;
-                                case PARTIAL:
+                                case 'patrial':
                                 _.partial++;
                                 break;
                                 default:
@@ -217,4 +207,25 @@ module.exports.getCertificationCompliance = function(certifications){
         });
     })
     
+}
+
+module.exports.getComponents = function(callback){
+    fetch(constants.get_components_url).then(r => r.json())
+      .then(data => {
+        // localStorage.setItem('users',JSON.stringify(data));
+        callback(data);
+      })
+      .catch(e => console.log(e));
+}
+
+module.exports.getComponent = function(url,callback){
+    fetch(url).then(r=>r.json())
+    .then(data=>{
+        //format data
+        let standardsCompliance={};
+        formatComponent(data, standardsCompliance);
+        console.log(data,standardsCompliance)
+        callback(standardsCompliance);
+    })
+    .catch(e=>console.log(e));
 }

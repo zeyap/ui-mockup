@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
+import StandardTableView from '../TableView/StandardTableView'
 
 class StandardsListView extends React.Component {
 
   constructor(props){
     super(props);
+    this.expandViewType = this.props.expandViewType || "description";
   }
   componentDidMount() {
     this.bindExpand();
@@ -84,6 +86,7 @@ class StandardsListView extends React.Component {
                   <span className="pficon pficon-error-circle-o"></span>
                   <strong>{ app.noncompliant }</strong> Non-compliant Items
                 </div>
+                <div id="barChart"></div>
               </div>
             </div>
           </div>
@@ -114,7 +117,6 @@ class StandardsListView extends React.Component {
                 <dt>Technical Controls: </dt>
                 <dd>{app.technicalControls}</dd>
               </dl>
-
             </div>
           </div>
         </div>
