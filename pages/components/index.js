@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Layout from '../../components/Layout';
 import CardView from '../../components/CardView/CardView';
 import constants from '../../core/constants';
-import StandardTableView from '../../components/TableView/StandardTableView'
+import ComponentListView from '../../components/ListView/ComponentListView'
 import {getComponents, getComponent} from '../../utils/open-control-utils.js';
 import history from '../../core/history';
 
@@ -41,6 +41,12 @@ class UsersPage extends React.Component {
     }).bind(this)
   }
 
+  back = ()=>{
+    this.setState({
+      showDetail:-1
+    })
+  }
+
   render() {
     if(this.state.showDetail===-1){
         return (
@@ -55,8 +61,11 @@ class UsersPage extends React.Component {
     }else{
       return (
       <Layout>
+      
       <div className="container-fluid container-pf-nav-pf-vertical container-cards-pf">
-        <StandardTableView detail={this.state.detail}/>
+      <button className="btn btn-default" type="button" onClick={this.back}>Back</button>
+      
+        <ComponentListView detail={this.state.detail}/>
         </div>
       </Layout>)
     }

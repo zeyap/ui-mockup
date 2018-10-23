@@ -1,11 +1,24 @@
 import React, { PropTypes } from 'react';
+import './standardTableView.css'
 
 class StandardTableView extends React.Component {
   constructor(props){
     super(props);
+    this.detail = Object.entries(this.props.detail);
   }
   componentDidMount() {
-    
+    this.detail.forEach((control,controlid)=>{
+      if(control[1].narrative===undefined)return;
+      control[1].narrative.forEach((item,itemid)=>{
+        let collapseBody = $("#collapse-"+controlid+'-'+itemid);
+        collapseBody.collapse('hide');
+        $("#collapse-header-"+controlid+'-'+itemid).on("click",(function(){
+          collapseBody.collapse('toggle');
+          $("#collapse-header-"+controlid+'-'+itemid+">a").toggleClass('.collapse-show-sign');
+        }));
+        
+      })
+    })
   }
 
   componentDidUpdate() {
@@ -17,37 +30,68 @@ class StandardTableView extends React.Component {
   }
 
   render() {
-    console.log(this.props.detail)
     return (<div>
-    {/* <div>{this.props.detail.name}</div>
-        {this.props.detail.satisfies.map((control,id)=>(
-          <div key={id}>{control.control_key} {control.implementation_status}</div>
-        ))} */}
-
-
     {/* Table HTML */}
-    <table className="table table-striped table-bordered table-hover" id="table1">
+    <table className="table table-striped table-bordered table-hover" id="table1" style={{"minWidth":"0"}}>
       <thead>
         <tr>
           <th><label className="sr-only" htmlFor="selectAll">Select all rows</label><input type="checkbox" id="selectAll" name="selectAll"/></th>
           <th>ControlName</th>
-          <th>Browser</th>
-          <th>Platform(s)</th>
-          <th>Engine Version</th>
-          <th>CSS Grade</th>
-          <th colSpan="2">Actions</th>
+          <th>CoveredBy</th>
+          <th colSpan="4">Narrative</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th><label className="sr-only" htmlFor="selectAll">Select all rows</label><input type="checkbox" id="selectAll" name="selectAll"/></th>
-          <td>Rendering Engine</td>
-          <td>Browser</td>
-          <td>Platform(s)</td>
-          <td>Engine Version</td>
-          <td>CSS Grade</td>
-          <td colSpan="2">Actions</td>
+      {this.detail.map((control,controlid)=>{
+        return(
+        <tr key={controlid}>
+          <td><label className="sr-only" htmlFor="selectAll">Select all rows</label><input type="checkbox" id="selectAll" name="selectAll"/></td>
+          <td>{control[0]}</td>
+          <td>{control[1].covered_by}</td>
+          <td colSpan="4" style={{padding:0}}>
+          {(control[1].narrative)?(
+              <div className="panel-group" id="accordion-markup" style={{"width":"400px",margin:'5px'}}>
+            {control[1].narrative.map((item,itemid)=>(<div key={itemid} className="panel panel-default">
+                <div className="panel-heading" id={"collapse-header-"+controlid+'-'+itemid}>
+                  <h4 className="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion-markup" id={"collapse-sign-"+controlid+'-'+itemid}>
+                    <div style={{fontSize:'0.9em',fontWeight:'lighter',display: "inline-block",width: "90%",overflow: "hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+                      {item.text}
+                    </div>
+                    </a>
+                  </h4>
+                </div>
+                <div className="panel-collapse collapse in" id={"collapse-"+controlid+'-'+itemid}>
+                  <div className="panel-body">
+                    {item.text}
+                  </div>
+                </div>
+              </div>))}
+            </div>)
+              :(<div></div>)}
+          </td>
+          <td>{control[1].implementation_status==='complete'?(
+            <div style={{fontSize: '1.2em',margin: '5px'}}>
+              <span className="pficon pficon-ok" style={{width:'20px'}}></span>
+              {control[1].implementation_status}
+            </div>
+          ):status==='partial'?(
+            <div style={{fontSize: '1.2em',margin: '5px'}}>
+              <span className="pficon pficon-warning-triangle-o" style={{width:'20px'}}></span>
+              {control[1].implementation_status}
+            </div>
+          ):(
+            <div style={{fontSize: '1.2em',margin: '5px'}}>
+              <span className="pficon pficon-error-circle-o" style={{width:'20px'}}></span>
+              {'  '+control[1].implementation_status}
+            </div>
+          )}</td>
         </tr>
+        )
+        })}
+        
+
       </tbody>
       
     </table>

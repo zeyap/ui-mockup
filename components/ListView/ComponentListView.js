@@ -2,10 +2,18 @@ import React, { PropTypes } from 'react';
 import StandardTableView from '../TableView/StandardTableView'
 import ListViewBase from './ListViewBase'
 
-class StandardsListView extends ListViewBase {
+class ComponentListView extends ListViewBase {
 
   constructor(props){
     super(props);
+
+    let serializedByStandards = [];
+    for(let key in props.detail){
+        serializedByStandards.push(Object.assign(props.detail[key],{name:key}));
+    }
+    this.state={
+        detail: serializedByStandards
+    };
   }
   componentDidMount() {
     this.bindExpand();
@@ -26,7 +34,7 @@ class StandardsListView extends ListViewBase {
     return (
       <div className="list-group list-view-pf list-view-pf-view">
 
-        {this.props.apps.map((app,i) =>
+        {this.state.detail.map((app,i) =>
         <div className="list-group-item" key={i}>
 
           <div className="list-group-item-header">
@@ -69,33 +77,10 @@ class StandardsListView extends ListViewBase {
           </div>
         </div>
 
-        <div className="list-group-item-container container-fluid hidden">
-          <div className="close">
-            <span className="pficon pficon-close"></span>
-          </div>
-          <p>
-            <i>{ app.description }</i>
-            <br /><br />
-          </p>
+        <div className="list-group-item-container container-fluid hidden" style={{padding:'15px'}}>
           
-          <div className="row">
-            <div className="col-md-3">
-            </div>
-            <div className="col-md-9">
-              <dl className="dl-horizontal">
-                <dt>Control Familes:</dt>
-                <dd>{app.controlFamilies}</dd>
-                <dt>Total Controls: </dt>
-                <dd>{app.totalControls}</dd>
-                <dt>Inherited Compliance: </dt>
-                <dd>{app.inheritedCompliance}</dd>
-                <dt>Procedural Controls: </dt>
-                <dd>{app.proceduralControls}</dd>
-                <dt>Technical Controls: </dt>
-                <dd>{app.technicalControls}</dd>
-              </dl>
-            </div>
-          </div>
+          <StandardTableView detail = {app}/>
+          
         </div>
       </div>
       )}
@@ -105,4 +90,4 @@ class StandardsListView extends ListViewBase {
 
 }
 
-export default StandardsListView;
+export default ComponentListView;

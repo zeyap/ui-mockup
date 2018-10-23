@@ -131,14 +131,14 @@ module.exports.getStandardsComplianceData = function(standards){
 
 let formatComponent = function(doc, standardsCompliance){
     if(doc !== null)
-                    doc.satisfies.forEach((item)=>{
-                        standardsCompliance[item["standard_key"]] = standardsCompliance[item["standard_key"]]||{};
-                        let standard = standardsCompliance[item["standard_key"]];
-                        let control = item["control_key"];
-                        let status = item["implementation_status"];
-                        standard[control] = {};
-                        standard[control] = Object.assign(standard[control],item);
-                    })
+        doc.satisfies.forEach((item)=>{
+            standardsCompliance[item["standard_key"]] = standardsCompliance[item["standard_key"]]||{};
+            let standard = standardsCompliance[item["standard_key"]];
+            let control = item["control_key"];
+            let status = item["implementation_status"];
+            standard[control] = {};
+            standard[control] = Object.assign(standard[control],item);
+        })
 }
 
 
@@ -183,8 +183,6 @@ module.exports.getCertificationCompliance = function(certifications){
                 }).then((doc)=>{
                     if(doc !== null)
                     for(let standardKey in doc.standards){
-                        
-                        // console.log(standardsCompliance, standardKey)
                         if(standardsCompliance[standardKey]===undefined) break;
                         for(let controlKey in doc.standards[standardKey]){
                             _.totalControls++;
@@ -224,7 +222,30 @@ module.exports.getComponent = function(url,callback){
         //format data
         let standardsCompliance={};
         formatComponent(data, standardsCompliance);
-        console.log(data,standardsCompliance)
+        let meta = {
+            satisfied: 0,
+            partial: 0,
+            noncompliant: 0,
+            totalControls:0
+        };
+        for(let standardKey in standardsCompliance){
+            let standard = standardsCompliance[standardKey];
+            for(let item in standard){
+                meta.totalControls++;
+                switch(standard[item].implementation_status){
+                    case 'complete':
+                    meta.satisfied++;
+                    break;
+                    case 'partial':
+                    meta.partial++;
+                    break;
+                    default:
+                    meta.noncompliant++;
+                    break;
+                }
+            }
+            standard = Object.assign(standard,meta);
+        }
         callback(standardsCompliance);
     })
     .catch(e=>console.log(e));
