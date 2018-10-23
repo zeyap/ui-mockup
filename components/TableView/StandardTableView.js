@@ -14,7 +14,9 @@ class StandardTableView extends React.Component {
         collapseBody.collapse('hide');
         $("#collapse-header-"+controlid+'-'+itemid).on("click",(function(){
           collapseBody.collapse('toggle');
-          $("#collapse-header-"+controlid+'-'+itemid+">a").toggleClass('.collapse-show-sign');
+          let sign = $("#collapse-sign-"+controlid+'-'+itemid);
+          sign.toggleClass('fa-angle-down');
+          sign.toggleClass('fa-angle-right');
         }));
         
       })
@@ -55,11 +57,12 @@ class StandardTableView extends React.Component {
             {control[1].narrative.map((item,itemid)=>(<div key={itemid} className="panel panel-default">
                 <div className="panel-heading" id={"collapse-header-"+controlid+'-'+itemid}>
                   <h4 className="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion-markup" id={"collapse-sign-"+controlid+'-'+itemid}>
+                    <div data-toggle="collapse" data-parent="#accordion-markup">
+                    <div style={{display:"inline-block", width:'15px'}} className="fa fa-angle-down" id={"collapse-sign-"+controlid+'-'+itemid}></div>
                     <div style={{fontSize:'0.9em',fontWeight:'lighter',display: "inline-block",width: "90%",overflow: "hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
                       {item.text}
                     </div>
-                    </a>
+                    </div>
                   </h4>
                 </div>
                 <div className="panel-collapse collapse in" id={"collapse-"+controlid+'-'+itemid}>

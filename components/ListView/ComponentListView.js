@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import StandardTableView from '../TableView/StandardTableView'
 import ListViewBase from './ListViewBase'
+import ComplianceProgress from './ComplianceProgress'
 
 class ComponentListView extends ListViewBase {
 
@@ -54,25 +55,7 @@ class ComponentListView extends ListViewBase {
                   { app.name }
                 </div>
               </div>
-              <div className="list-view-pf-additional-info">
-                <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-orders"></span>
-                  <strong>{ app.totalControls }</strong> Security Controls
-                </div>
-                <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-ok"></span>
-                  <strong>{ app.satisfied }</strong> Satisfied
-                </div>
-                <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-warning-triangle-o"></span>
-                  <strong>{ app.partial }</strong> Partially Satisfied	
-                </div>
-                <div className="list-view-pf-additional-info-item">
-                  <span className="pficon pficon-error-circle-o"></span>
-                  <strong>{ app.noncompliant }</strong> Non-compliant Items
-                </div>
-                <div id="barChart"></div>
-              </div>
+              <ComplianceProgress app={app} />
             </div>
           </div>
         </div>

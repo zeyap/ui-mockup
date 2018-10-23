@@ -36,7 +36,6 @@ class UsersPage extends React.Component {
           detail: data,
           showDetail:i
         })
-        console.log(data)
       })
     }).bind(this)
   }
