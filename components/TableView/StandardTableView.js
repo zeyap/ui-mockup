@@ -1,26 +1,27 @@
 import React, { PropTypes } from 'react';
 import './standardTableView.css'
+import Pagination from './pagination'
+import TableFilter from './TableFilter'
+import tableview from './tableview.css'
+import DropdownMenu from './DropdownMenu'
+import DropdownTextbox from './DropdownTextbox'
 
 class StandardTableView extends React.Component {
   constructor(props){
     super(props);
-    this.detail = Object.entries(this.props.detail);
+    this.standardKey = this.props.standardKey;
+
+    let isControlSelected=this.initControlStatus(6,0);
+    //checkboxes
+    this.state={
+      isControlSelected,
+      numberPerPage: 6,
+      currentPage: 0
+    }
+    this.selectedNumber =0;
   }
   componentDidMount() {
-    this.detail.forEach((control,controlid)=>{
-      if(control[1].narrative===undefined)return;
-      control[1].narrative.forEach((item,itemid)=>{
-        let collapseBody = $("#collapse-"+controlid+'-'+itemid);
-        collapseBody.collapse('hide');
-        $("#collapse-header-"+controlid+'-'+itemid).on("click",(function(){
-          collapseBody.collapse('toggle');
-          let sign = $("#collapse-sign-"+controlid+'-'+itemid);
-          sign.toggleClass('fa-angle-down');
-          sign.toggleClass('fa-angle-right');
-        }));
-        
-      })
-    })
+    
   }
 
   componentDidUpdate() {
@@ -31,46 +32,143 @@ class StandardTableView extends React.Component {
     
   }
 
+  initControlStatus = (size,value)=>{
+    let isControlSelected=[];
+    for(let i=0;i<size;i++){
+      isControlSelected[i] =value;
+    }
+    return isControlSelected;
+  }
+
+  toggleSelectAll = ()=>{
+    let isControlSelected = [...this.state.isControlSelected];
+    this.selectedNumber = isControlSelected.reduce((accum,item)=>accum+item,0);
+    if(this.selectedNumber < this.detail.length){
+      for(let i=0;i<this.detail.length;i++){
+        isControlSelected[i]=1;
+      }
+      this.showSelectMenu();
+      this.selectedNumber = this.detail.length;
+      
+    }else{
+      for(let i=0;i<this.detail.length;i++){
+        isControlSelected[i]=0;
+      }
+      this.hideSelectMenu();
+      this.selectedNumber =0;
+    }
+    this.setState({
+      isControlSelected
+    })
+    
+  }
+
+  selectCheckbox = (controlid)=>{
+    return (()=>{
+      let isControlSelected = [...this.state.isControlSelected];
+      isControlSelected[controlid] = isControlSelected[controlid]===0?1:0;
+      this.setState({
+        isControlSelected
+      })
+      if(isControlSelected[controlid]===0){
+        this.selectedNumber--;
+      }else{
+        this.selectedNumber++;
+      }
+      
+      if(this.selectedNumber===0){
+        this.hideSelectMenu();
+      }else{
+        this.showSelectMenu();
+      }
+      
+    }).bind(this);
+  }
+
+  showSelectMenu = ()=>{
+    let selectmenu = $("#selectMenu");
+    if(selectMenu){
+      selectmenu.css("opacity",1);
+      selectmenu.css("transition","opacity 0.2s");
+    }
+  }
+
+  hideSelectMenu = ()=>{
+    let selectmenu = $("#selectMenu");
+    if(selectMenu){
+      selectmenu.css("opacity",0);
+      selectmenu.css("transition","opacity 0.2s");
+    }
+  }
+
+  setPageNumber=()=>{
+    return (currPage)=>{
+      this.setState({
+        currentPage: currPage,
+        isControlSelected:this.initControlStatus(this.state.numberPerPage,0)
+      })
+    }
+  }
+
+  setNumberPerPage=()=>{
+    return (numPerPage)=>{
+      this.setState({
+        numberPerPage: numPerPage,
+        isControlSelected:this.initControlStatus(numPerPage,0)
+      })
+    }
+  }
+
   render() {
+    let start = this.state.numberPerPage*this.state.currentPage;
+    let end = start+this.state.numberPerPage;
+    this.detail = Object.entries(this.props.detail).slice(start,end);
+    let totalRecordNum = Object.entries(this.props.detail).length;
     return (<div>
+    <div className={tableview.row}>
+      <TableFilter/>
+    </div>
     {/* Table HTML */}
-    <table className="table table-striped table-bordered table-hover" id="table1" style={{"minWidth":"0"}}>
+    <table className="table table-striped table-bordered table-hover" id="table1" style={{"minWidth":"0",tableLayout: "fixed", width: "100%"}}>
+    <thead><tr>
+    <th style={{width:"35px"}}><input type="checkbox" onChange={this.toggleSelectAll}/></th>
+    <th colSpan="7">
+      <div className={tableview.row} style={{transform:'translateY(10%)'}}>
+        <div style={{opacity:0}} id="selectMenu" className={tableview.left}>
+          <span>Set status ...</span>
+          <DropdownMenu items={['Complete','Partial','Unknown','Planned','Not Applicable']}/>
+        </div>
+        <div className={tableview.right}>
+          <Pagination totalRecordNum={totalRecordNum} setNumberPerPage={this.setNumberPerPage()} setPageNumber={this.setPageNumber()}/>
+        </div>
+      </div>
+    </th></tr></thead>
       <thead>
         <tr>
-          <th><label className="sr-only" htmlFor="selectAll">Select all rows</label><input type="checkbox" id="selectAll" name="selectAll"/></th>
+          <th></th>
           <th>ControlName</th>
           <th>CoveredBy</th>
           <th colSpan="4">Narrative</th>
           <th>Status</th>
         </tr>
       </thead>
+
       <tbody>
       {this.detail.map((control,controlid)=>{
+        let suffix = '-'+this.standardKey+'-'+controlid;
         return(
         <tr key={controlid}>
-          <td><label className="sr-only" htmlFor="selectAll">Select all rows</label><input type="checkbox" id="selectAll" name="selectAll"/></td>
+          <td>
+            <label className="sr-only" >Select all rows</label>
+            <input type="checkbox" onChange={this.selectCheckbox(controlid)} checked={this.state.isControlSelected[controlid]}/>
+          </td>
+          
           <td>{control[0]}</td>
           <td>{control[1].covered_by}</td>
-          <td colSpan="4" style={{padding:0}}>
+          <td colSpan="4" style={{padding:0, wordWrap: "break-word"}}>
           {(control[1].narrative)?(
-              <div className="panel-group" id="accordion-markup" style={{"width":"400px",margin:'5px'}}>
-            {control[1].narrative.map((item,itemid)=>(<div key={itemid} className="panel panel-default">
-                <div className="panel-heading" id={"collapse-header-"+controlid+'-'+itemid}>
-                  <h4 className="panel-title">
-                    <div data-toggle="collapse" data-parent="#accordion-markup">
-                    <div style={{display:"inline-block", width:'15px'}} className="fa fa-angle-down" id={"collapse-sign-"+controlid+'-'+itemid}></div>
-                    <div style={{fontSize:'0.9em',fontWeight:'lighter',display: "inline-block",width: "90%",overflow: "hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
-                      {item.text}
-                    </div>
-                    </div>
-                  </h4>
-                </div>
-                <div className="panel-collapse collapse in" id={"collapse-"+controlid+'-'+itemid}>
-                  <div className="panel-body">
-                    {item.text}
-                  </div>
-                </div>
-              </div>))}
+              <div style={{margin:'5px'}}>
+            {control[1].narrative.map((item,itemid)=>(<DropdownTextbox text={item.text} id={suffix+'-'+itemid} key={itemid}/>))}
             </div>)
               :(<div></div>)}
           </td>
@@ -90,6 +188,7 @@ class StandardTableView extends React.Component {
               {'  '+control[1].implementation_status}
             </div>
           )}</td>
+          
         </tr>
         )
         })}
@@ -98,33 +197,6 @@ class StandardTableView extends React.Component {
       </tbody>
       
     </table>
-
-    {/* <form className="content-view-pf-pagination table-view-pf-pagination clearfix" id="pagination1">
-      <div className="form-group">
-        <select className="selectpicker pagination-pf-pagesize">
-          <option value="6">6</option>
-          <option value="10" >10</option>
-          <option value="15" selected="selected">15</option>
-          <option value="25">25</option>
-          <option value="50">50</option>
-        </select>
-        <span>per page</span>
-      </div>
-      <div className="form-group">
-        <span><span className="pagination-pf-items-current">1-15</span> of <span className="pagination-pf-items-total">75</span></span>
-        <ul className="pagination pagination-pf-back">
-          <li className="disabled"><a href="#" title="First Page"><span className="i fa fa-angle-double-left"></span></a></li>
-          <li className="disabled"><a href="#" title="Previous Page"><span className="i fa fa-angle-left"></span></a></li>
-        </ul>
-        <label htmlFor="pagination1-page" className="sr-only">Current Page</label>
-        <input className="pagination-pf-page" type="text" value="1" id="pagination1-page"/>
-        <span>of <span className="pagination-pf-pages">5</span></span>
-        <ul className="pagination pagination-pf-forward">
-          <li><a href="#" title="Next Page"><span className="i fa fa-angle-right"></span></a></li>
-          <li><a href="#" title="Last Page"><span className="i fa fa-angle-double-right"></span></a></li>
-        </ul>
-      </div>
-    </form> */}
   </div>
     )
   }

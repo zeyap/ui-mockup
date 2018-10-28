@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import StandardTableView from '../TableView/StandardTableView'
 import ListViewBase from './ListViewBase'
 import ComplianceProgress from './ComplianceProgress'
+import DropdownMenu from '../TableView/DropdownMenu'
 
 class ComponentListView extends ListViewBase {
 
@@ -34,7 +35,6 @@ class ComponentListView extends ListViewBase {
     
     return (
       <div className="list-group list-view-pf list-view-pf-view">
-
         {this.state.detail.map((app,i) =>
         <div className="list-group-item" key={i}>
 
@@ -43,7 +43,7 @@ class ComponentListView extends ListViewBase {
               <span className="fa fa-angle-right"></span>
           </div>
           <div className="list-view-pf-actions">
-            <button className="btn btn-default">Details</button>
+            {/* <button className="btn btn-default">Details</button> */}
           </div>
           <div className="list-view-pf-main-info">
             <div className="list-view-pf-left">
@@ -55,14 +55,22 @@ class ComponentListView extends ListViewBase {
                   { app.name }
                 </div>
               </div>
+              
               <ComplianceProgress app={app} />
             </div>
           </div>
         </div>
 
         <div className="list-group-item-container container-fluid hidden" style={{padding:'15px'}}>
+          {/* <div class="btn-group"> */}
+         Download as ... <DropdownMenu items={['Microsoft Word','YAML']}/>
           
-          <StandardTableView detail = {app}/>
+          <span style={{padding: '0 0.5em'}}></span>
+            
+            {/* <button type="button" class="btn btn-default"></button>
+          </div> */}
+          <div style={{height: '1em', width: '100%'}}></div>
+          <StandardTableView standardKey={i} detail = {app}/>
           
         </div>
       </div>

@@ -1,0 +1,13 @@
+.input_width{
+    width: 300px
+}
+
+.list_inline{
+    margin-left:1em;
+    display:inline-block;
+}
+
+.filter_inline{
+    float: left;
+    width: auto;
+}
