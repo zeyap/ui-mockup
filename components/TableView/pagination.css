@@ -1,0 +1,16 @@
+.inline{
+    display: inline-block;
+}
+
+.vertical_center{
+    margin:0;
+    transform: translateY(35%);
+}
+
+.display{
+    width: auto;
+}
+
+.parent_position{
+    transform: translateY(-30%);
+}

@@ -5,9 +5,10 @@ class CardView extends React.Component {
   componentDidMount() {
     //run matchHeight jquery plugin
     this.matchHeight();
+    this.card = $('.card-pf-view-single-select');
 
     // Card Single Select
-    $('.card-pf-view-single-select').click(function() {
+    this.card.click(function() {
       if ($(this).hasClass('active'))
       { $(this).removeClass('active'); }
       else
@@ -28,7 +29,7 @@ class CardView extends React.Component {
     <div className="row row-cards-pf">
       {users.map((user,i) =>
       <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3" key={i}>
-        <div className="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+        <div className="card-pf card-pf-view card-pf-view-select card-pf-view-single-select" onClick={this.props.onClickFunctions===undefined? null:this.props.onClickFunctions(i)}>
           <div className="card-pf-body" style={{height: '260px'}}>
             <div className="card-pf-top-element">
               <span className="fa fa-birthday-cake card-pf-icon-circle"></span>

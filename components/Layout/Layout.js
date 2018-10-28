@@ -10,12 +10,16 @@ class Layout extends React.Component {
     className: PropTypes.string,
   };
 
+  componentDidMount(){
+    
+  }
+
   render() {
     return (
       <div>
         <Header />
         <Navigation />
-        <div {...this.props} className={cx(s.content, this.props.className)} />
+        <div className="page-body" {...this.props} className={cx(s.content, this.props.className)} />
       </div>
     );
   }

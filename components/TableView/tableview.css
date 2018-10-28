@@ -1,0 +1,16 @@
+.right{
+    position: absolute;
+    right:0;
+}
+
+.left{
+    position: absolute;
+    left:0;
+}
+
+.row{
+    display: block;
+    position: relative;
+    min-height: 2.5em;
+    width: 100%;
+}

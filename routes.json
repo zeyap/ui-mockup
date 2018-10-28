@@ -44,6 +44,10 @@
     "page": "./pages/components"
   },
   {
+    "path":"/components/:id",
+    "page":"./pages/components"
+  },
+  {
     "path": "/pages",
     "page": "./pages/pages"
   },
