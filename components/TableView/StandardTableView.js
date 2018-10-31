@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import './standardTableView.css'
-import Pagination from './pagination'
+import Pagination from './Pagination'
 import TableFilter from './TableFilter'
 import tableview from './tableview.css'
 import DropdownMenu from './DropdownMenu'
