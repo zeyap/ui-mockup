@@ -38,6 +38,7 @@ const config = {
     
     //js entries
     'jquery-match-height/dist/jquery.matchHeight.js',
+    'patternfly/dist/js/patternfly.min.js',
     /* The main entry point of your JavaScript application */
     './main.js'
   ],

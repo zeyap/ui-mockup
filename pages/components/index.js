@@ -32,6 +32,7 @@ class UsersPage extends React.Component {
     return (function(){
       //request component
       getComponent(this.state.users[i].url,data=>{
+        
         this.setState({
           detail: data,
           showDetail:i

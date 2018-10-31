@@ -7,18 +7,30 @@ export default class Pagination extends React.Component{
       super(props);
       this.state={
           currPage: 0,
-          totalPage: Math.ceil(this.props.totalRecordNum/6),
           numberPerPage:6
       }
+      
+  }
+  componentDidMount(){
+      $('.pagination-pf-back').children().addClass('disabled');
   }
 
   goTo=(page)=>{
       return ()=>{
-          if(page<this.state.totalPage && page >=0){
+          const totalPage = Math.ceil(this.props.totalRecordNum/this.state.numberPerPage);
+          if(page<totalPage && page >=0){
               this.setState({
                   currPage: page
               })
               this.props.setPageNumber(page);
+          }
+          if(page===0){
+              $('.pagination-pf-back').children().addClass('disabled');
+              $('.pagination-pf-forward').children().removeClass('disabled');
+          }
+          if(page===totalPage-1){
+              $('.pagination-pf-back').children().removeClass('disabled');
+              $('.pagination-pf-forward').children().addClass('disabled');
           }
       }
   }
@@ -26,15 +38,15 @@ export default class Pagination extends React.Component{
   setNumberPerPage =(num)=>{
     this.setState({
         numberPerPage:num,
-        totalPage: Math.ceil(this.props.totalRecordNum/num),
         currPage:0
     })
-    this.props.setNumberPerPage(num);
+    // this.props.setNumberPerPage(num);
     this.props.setPageNumber(0);
 }
 
   render(){
-      return (<div className={pagination.inline+" "+pagination.parent_position}>
+    const totalPage = Math.ceil(this.props.totalRecordNum/this.state.numberPerPage);
+    return (<div className={pagination.inline+" "+pagination.parent_position}>
       <div className={pagination.display}>
   <div className={pagination.inline}>
     
@@ -46,18 +58,18 @@ export default class Pagination extends React.Component{
     <span><span>{this.state.currPage*this.state.numberPerPage} - {this.state.numberPerPage*(this.state.currPage+1)-1}</span> of <span>{this.props.totalRecordNum} </span></span>
     <div style={{display:"inline-block"}}>
     <ul className={"pagination pagination-pf-back "+pagination.vertical_center}>
-      <li className="disabled"><a onClick={this.goTo(0)} title="First Page"><span className="i fa fa-angle-double-left"></span></a></li>
-      <li className="disabled"><a onClick={this.goTo(this.state.currPage-1)} title="Previous Page"><span className="i fa fa-angle-left"></span></a></li>
+      <li><a onClick={this.goTo(0)} title="First Page"><span className="i fa fa-angle-double-left"></span></a></li>
+      <li><a onClick={this.goTo(this.state.currPage-1)} title="Previous Page"><span className="i fa fa-angle-left"></span></a></li>
     </ul>
     </div>
     <label className="sr-only">Current Page</label>
     <input type="text" value={this.state.currPage}/>
     
-    <span>of <span>{this.state.totalPage-1}</span></span>
+    <span>of <span>{totalPage-1}</span></span>
     <div style={{display:"inline-block"}}>
     <ul className={"pagination pagination-pf-forward "+pagination.vertical_center}>
       <li ><a onClick={this.goTo(this.state.currPage+1)} title="Next Page"><span className="i fa fa-angle-right"></span></a></li>
-      <li><a onClick={this.goTo(this.state.totalPage-1)} title="Last Page"><span  className="i fa fa-angle-double-right"></span></a></li>
+      <li><a onClick={this.goTo(totalPage-1)} title="Last Page"><span  className="i fa fa-angle-double-right"></span></a></li>
     </ul>
     </div>
   </div>

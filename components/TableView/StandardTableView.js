@@ -16,7 +16,8 @@ class StandardTableView extends React.Component {
     this.state={
       isControlSelected,
       numberPerPage: 6,
-      currentPage: 0
+      currentPage: 0,
+      detail: Object.entries(this.props.detail)
     }
     this.selectedNumber =0;
   }
@@ -43,15 +44,15 @@ class StandardTableView extends React.Component {
   toggleSelectAll = ()=>{
     let isControlSelected = [...this.state.isControlSelected];
     this.selectedNumber = isControlSelected.reduce((accum,item)=>accum+item,0);
-    if(this.selectedNumber < this.detail.length){
-      for(let i=0;i<this.detail.length;i++){
+    if(this.selectedNumber < this.paginatedDetail.length){
+      for(let i=0;i<this.paginatedDetail.length;i++){
         isControlSelected[i]=1;
       }
       this.showSelectMenu();
-      this.selectedNumber = this.detail.length;
+      this.selectedNumber = this.paginatedDetail.length;
       
     }else{
-      for(let i=0;i<this.detail.length;i++){
+      for(let i=0;i<this.paginatedDetail.length;i++){
         isControlSelected[i]=0;
       }
       this.hideSelectMenu();
@@ -119,14 +120,35 @@ class StandardTableView extends React.Component {
     }
   }
 
+  addFilter = (field, containedWord)=>{
+    let filtered=[];
+    if(field === 'ControlName'){
+      filtered = this.state.detail.filter((item)=>item[0].indexOf(containedWord)>-1);
+    }
+    if(field === 'Status'){
+      filtered = this.state.detail.filter((item)=>item[1]['implementation_status'].indexOf(containedWord)>-1);
+    }
+    this.setState({
+      detail:filtered
+    })
+  }
+
+  clearFilters=()=>{
+    this.setState({
+      detail:Object.entries(this.props.detail)
+    })
+  }
+
   render() {
     let start = this.state.numberPerPage*this.state.currentPage;
     let end = start+this.state.numberPerPage;
-    this.detail = Object.entries(this.props.detail).slice(start,end);
-    let totalRecordNum = Object.entries(this.props.detail).length;
+    this.paginatedDetail = this.state.detail.slice(start,end);
+    
+    let totalRecordNum = this.state.detail.length;
+    // console.log('render',totalRecordNum)
     return (<div>
     <div className={tableview.row}>
-      <TableFilter/>
+      <TableFilter totalRecordNum={totalRecordNum} addFilter={this.addFilter} clearFilters={this.clearFilters}/>
     </div>
     {/* Table HTML */}
     <table className="table table-striped table-bordered table-hover" id="table1" style={{"minWidth":"0",tableLayout: "fixed", width: "100%"}}>
@@ -154,7 +176,7 @@ class StandardTableView extends React.Component {
       </thead>
 
       <tbody>
-      {this.detail.map((control,controlid)=>{
+      {this.paginatedDetail.map((control,controlid)=>{
         let suffix = '-'+this.standardKey+'-'+controlid;
         return(
         <tr key={controlid}>

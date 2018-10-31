@@ -4,8 +4,54 @@ import tableFilter from './tablefilter.css'
 export default class TableFilter extends React.Component{
   constructor(props){
       super(props);
+      this.state = {
+        filterValue: "",
+        filters: [],
+        filterType: "ControlName"
+      }
   }
+  displayFilterInput = (evt)=>{
+    this.setState({
+      filterValue: evt.target.value
+    });
+  }
+  componentDidMount(){
+    $("#filterInput").on('keyup', (function (e) {
+        if (e.keyCode == 13) {
+            // Do something
+            let currFilters = [...this.state.filters];
+            currFilters.push(''+ this.state.filterType+": "+this.state.filterValue);
+            this.props.addFilter(this.state.filterType, this.state.filterValue);
+            this.setState({
+              filterValue:"",
+              filters: currFilters
+            })
+        }
+    }).bind(this));
+  }
+
+  selectFilterType=(id, name)=>{
+    return ()=>{
+      this.clearAllSelection();
+      $(id).addClass('selected');
+      this.setState({
+        filterType: name
+      })
+    }
+  }
+  clearAllSelection = ()=>{
+      $('#filter-controlname').removeClass('selected');
+      $('#filter-status').removeClass('selected');
+  }
+  clearAllFilters = ()=>{
+    this.setState({
+      filters:[]
+    })
+    this.props.clearFilters();
+  }
+
   render(){
+    // console.log(this.props.totalRecordNum)
       return (<div className={tableFilter.total_width}>
     <div className={tableFilter.input_width +" "+ tableFilter.filter_inline}>
     <div className="filter-pf" id="input-filters">
@@ -14,46 +60,36 @@ export default class TableFilter extends React.Component{
           <div className="input-group-btn">
             <div className="dropdown btn-group">
               <button type="button" className="dropdown-toggle btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Field
+                {this.state.filterType}
                 <span className="caret"></span>
               </button>
               <ul className="dropdown-menu">
-                <li className="selected"><a href="#">ControlName</a></li>
-                <li><a href="#">Narrative</a></li>
-                <li><a href="#">Status</a></li>
+                <li id="filter-controlname" onClick={this.selectFilterType('#filter-controlname','ControlName')}><a>ControlName</a></li>
+                <li id="filter-status" onClick={this.selectFilterType('#filter-status','Status')}><a>Status</a></li>
               </ul>
             </div>
           </div>
-          <input type="text" className="form-control" value="" placeholder="Filter by Name"/>
+          <input id="filterInput" type="text" className="form-control" value={this.state.filterValue} placeholder={"Filter by "+this.state.filterType} onChange={this.displayFilterInput}/>
         </div>
       </div>
     </div>
   </div>
   <div className={"col-sm-12 "+tableFilter.filter_inline}>
-                <span><b>40 Results </b></span>
-                <span>Active filters:</span>
-                <ul className={"list-inline "+tableFilter.list_inline}>
-                  <li>
-                    <span className="label label-info">
-                      Name: nameofthething
-                      <a href="#"><span className="fa fa-times"></span></a>
-                    </span>
-                  </li>
-                  <li>
-                    <span className="label label-info">
-                      Name: nameofthething
-                      <a href="#"><span className="fa fa-times"></span></a>
-                    </span>
-                  </li>
-                  <li>
-                    <span className="label label-info">
-                      Name: nameofthething
-                      <a href="#"><span className="fa fa-times"></span></a>
-                    </span>
-                  </li>
-                </ul>
-                <span><a href="#"> Clear All Filters</a></span>
-              </div>
+    <span><b>{this.props.totalRecordNum} Results </b></span>
+    <span>Active filters:</span>
+    <ul className={"list-inline "+tableFilter.list_inline}>
+    {this.state.filters.map((filter,key)=>(
+      <li key={key}>
+        <span className="label label-info">
+          {filter}
+          <a href="#"><span className="fa fa-times"></span></a>
+        </span>
+      </li>
+    ))}
+      
+    </ul>
+    <span><a onClick={this.clearAllFilters}> Clear All Filters</a></span>
+  </div>
     </div>);
   }
 }
