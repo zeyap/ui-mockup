@@ -15,6 +15,7 @@ class StandardTableView extends React.Component {
     //checkboxes
     this.state={
       isControlSelected,
+      ifAllSelected: false,
       numberPerPage: 6,
       currentPage: 0,
       detail: Object.entries(this.props.detail)
@@ -44,25 +45,28 @@ class StandardTableView extends React.Component {
   toggleSelectAll = ()=>{
     let isControlSelected = [...this.state.isControlSelected];
     this.selectedNumber = isControlSelected.reduce((accum,item)=>accum+item,0);
+    let ifAllSelected = false;
     if(this.selectedNumber < this.paginatedDetail.length){
       for(let i=0;i<this.paginatedDetail.length;i++){
         isControlSelected[i]=1;
       }
       this.showSelectMenu();
       this.selectedNumber = this.paginatedDetail.length;
-      
+      ifAllSelected=true;
     }else{
       for(let i=0;i<this.paginatedDetail.length;i++){
         isControlSelected[i]=0;
       }
       this.hideSelectMenu();
       this.selectedNumber =0;
+      ifAllSelected=false;
     }
     this.setState({
-      isControlSelected
+      isControlSelected,
+      ifAllSelected
     })
-    
   }
+
 
   selectCheckbox = (controlid)=>{
     return (()=>{
@@ -106,8 +110,10 @@ class StandardTableView extends React.Component {
     return (currPage)=>{
       this.setState({
         currentPage: currPage,
-        isControlSelected:this.initControlStatus(this.state.numberPerPage,0)
-      })
+        isControlSelected:this.initControlStatus(this.state.numberPerPage,0),
+        ifAllSelected: false
+      });
+      this.hideSelectMenu();
     }
   }
 
@@ -115,8 +121,10 @@ class StandardTableView extends React.Component {
     return (numPerPage)=>{
       this.setState({
         numberPerPage: numPerPage,
-        isControlSelected:this.initControlStatus(numPerPage,0)
-      })
+        isControlSelected:this.initControlStatus(numPerPage,0),
+        ifAllSelected: false
+      });
+      this.hideSelectMenu();
     }
   }
 
@@ -129,14 +137,26 @@ class StandardTableView extends React.Component {
       filtered = this.state.detail.filter((item)=>item[1]['implementation_status'].indexOf(containedWord)>-1);
     }
     this.setState({
-      detail:filtered
+      detail:filtered,
+      isControlSelected:this.initControlStatus(this.state.numberPerPage,0),
+      ifAllSelected: false
     })
+    this.hideSelectMenu();
   }
 
   clearFilters=()=>{
     this.setState({
-      detail:Object.entries(this.props.detail)
+      detail:Object.entries(this.props.detail),
+      isControlSelected:this.initControlStatus(this.state.numberPerPage,0),
+      ifAllSelected: false
     })
+    this.hideSelectMenu();
+  }
+
+  setStatusInBatch=(status)=>{
+    for(let i=0;i<this.paginatedDetail.length;i++){
+      console.log(this.paginatedDetail[i][0],status)
+    }
   }
 
   render() {
@@ -153,12 +173,12 @@ class StandardTableView extends React.Component {
     {/* Table HTML */}
     <table className="table table-striped table-bordered table-hover" id="table1" style={{"minWidth":"0",tableLayout: "fixed", width: "100%"}}>
     <thead><tr>
-    <th style={{width:"35px"}}><input type="checkbox" onChange={this.toggleSelectAll}/></th>
+    <th style={{width:"35px"}}><input type="checkbox" checked={this.state.ifAllSelected} onChange={this.toggleSelectAll}/></th>
     <th colSpan="7">
       <div className={tableview.row} style={{transform:'translateY(10%)'}}>
         <div style={{opacity:0}} id="selectMenu" className={tableview.left}>
           <span>Set status ...</span>
-          <DropdownMenu items={['Complete','Partial','Unknown','Planned','Not Applicable']}/>
+          <DropdownMenu onSelect={this.setStatusInBatch} items={['Complete','Partial','Unknown','Planned','Not Applicable']}/>
         </div>
         <div className={tableview.right}>
           <Pagination totalRecordNum={totalRecordNum} setNumberPerPage={this.setNumberPerPage()} setPageNumber={this.setPageNumber()}/>

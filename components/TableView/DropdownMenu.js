@@ -12,7 +12,7 @@ export default class DropdownMenu extends React.Component{
       this.setState({
           value:value
       })
-      this.props.onSelect(value)
+      this.props.onSelect(value);
   })
   render(){
       let items = this.props.items;
