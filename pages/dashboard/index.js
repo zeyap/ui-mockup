@@ -3,7 +3,7 @@ import Layout from '../../components/Layout';
 import ProjectListView from '../../components/ListView/ProjectListView';
 import constants from '../../core/constants';
 
-class HomePage extends React.Component {
+class Dashboard extends React.Component {
 
   state = { projects: [] };
 
@@ -34,4 +34,4 @@ class HomePage extends React.Component {
 
 }
 
-export default HomePage;
+export default Dashboard;
