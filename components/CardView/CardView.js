@@ -1,8 +1,54 @@
 import React, { PropTypes } from 'react';
 
 class CardView extends React.Component {
-
+  constructor(props){
+    super(props)
+    const { users } = props;// eslint-disable-line no-use-before-define
+    this.users = users;
+  }
   componentDidMount() {
+    
+    var c3ChartDefaults = $().c3ChartDefaults();
+
+  
+
+  // Donut Chart Bottom Legend
+  for(let i=0;i<this.users.length;i++){
+    var donutData = {
+      type : 'donut',
+      columns: [
+        ['Satisfied', 2],
+        ['Noncompliant', i],
+        ['Partial', 2],
+      ],
+      // onclick: function (d, i) { console.log("onclick", d, i); },
+      // onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+      // onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+    };
+
+    var donutChartBottomConfig = c3ChartDefaults.getDefaultRelationshipDonutConfig();
+    donutChartBottomConfig.bindto = '#donut-chart-'+i;
+    donutChartBottomConfig.tooltip = {show: true};
+    donutChartBottomConfig.data = donutData;
+    donutChartBottomConfig.legend = {
+      show: true,
+      position: 'bottom'
+    };
+    donutChartBottomConfig.size = {
+      width: 271,
+      height: 191
+    };
+    donutChartBottomConfig.tooltip = {
+      contents: $().pfDonutTooltipContents
+    };
+
+    // for(let i=0;i<)
+
+    var donutChartBottomLegend = c3.generate(donutChartBottomConfig);
+    $().pfSetDonutChartTitle("#donut-chart-"+i, 4+i, "Controls");
+  }
+  
+
     //run matchHeight jquery plugin
     this.matchHeight();
     this.card = $('.card-pf-view-single-select');
@@ -23,16 +69,16 @@ class CardView extends React.Component {
 
 
   render() {
-    const { users } = this.props; // eslint-disable-line no-use-before-define
-
+    
+    
     return (
     <div className="row row-cards-pf">
-      {users.map((user,i) =>
+      {this.users.map((user,i) =>
       <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3" key={i}>
         <div className="card-pf card-pf-view card-pf-view-select card-pf-view-single-select" onClick={this.props.onClickFunctions===undefined? null:this.props.onClickFunctions(i)}>
           <div className="card-pf-body" style={{height: '260px'}}>
             <div className="card-pf-top-element">
-              <span className="fa fa-birthday-cake card-pf-icon-circle"></span>
+              <div id={"donut-chart-"+i} className="example-donut-chart-bottom-legend"></div>
             </div>
             <h2 className="card-pf-title text-center">
               {user.name}
