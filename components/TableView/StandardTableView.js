@@ -158,11 +158,17 @@ class StandardTableView extends React.Component {
       console.log(this.paginatedDetail[i][0],status)
     }
   }
+  setImplementationStatus = (control1)=>{
+    return (status)=>{
+      control1.implementation_status = status;
+    }
+  }
 
   render() {
     let start = this.state.numberPerPage*this.state.currentPage;
     let end = start+this.state.numberPerPage;
     this.paginatedDetail = this.state.detail.slice(start,end);
+    console.log(this.paginatedDetail)
     
     let totalRecordNum = this.state.detail.length;
     // console.log('render',totalRecordNum)
@@ -197,6 +203,7 @@ class StandardTableView extends React.Component {
 
       <tbody>
       {this.paginatedDetail.map((control,controlid)=>{
+        
         let suffix = '-'+this.standardKey+'-'+controlid;
         return(
         <tr key={controlid}>
@@ -219,7 +226,7 @@ class StandardTableView extends React.Component {
             <div style={{fontSize: '1.2em',margin: '5px'}}>
               <span className="pficon pficon-ok" style={{width:'20px'}}></span>
             </div>
-          ):status==='partial'?(
+          ):control[1].implementation_status==='partial'?(
             <div style={{fontSize: '1.2em',margin: '5px'}}>
               <span className="pficon pficon-warning-triangle-o" style={{width:'20px'}}></span>
             </div>
@@ -228,7 +235,7 @@ class StandardTableView extends React.Component {
               <span className="pficon pficon-error-circle-o" style={{width:'20px'}}></span>
             </div>
           )}
-          <DropdownMenu items={['Not applicable', 'None','Unknown','Implemented','Planned','Partial', 'Complete']}/>
+          <DropdownMenu onSelect={this.setImplementationStatus(control[1])} items={['Not applicable', 'None','Unknown','Implemented','Planned','Partial', 'Complete']}/>
           </td>
           
         </tr>
