@@ -214,22 +214,22 @@ class StandardTableView extends React.Component {
             </div>)
               :(<div></div>)}
           </td>
+
           <td>{control[1].implementation_status==='complete'?(
             <div style={{fontSize: '1.2em',margin: '5px'}}>
               <span className="pficon pficon-ok" style={{width:'20px'}}></span>
-              {control[1].implementation_status}
             </div>
           ):status==='partial'?(
             <div style={{fontSize: '1.2em',margin: '5px'}}>
               <span className="pficon pficon-warning-triangle-o" style={{width:'20px'}}></span>
-              {control[1].implementation_status}
             </div>
           ):(
             <div style={{fontSize: '1.2em',margin: '5px'}}>
               <span className="pficon pficon-error-circle-o" style={{width:'20px'}}></span>
-              {'  '+control[1].implementation_status}
             </div>
-          )}</td>
+          )}
+          <DropdownMenu items={['Not applicable', 'None','Unknown','Implemented','Planned','Partial', 'Complete']}/>
+          </td>
           
         </tr>
         )
