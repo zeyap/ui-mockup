@@ -59,11 +59,15 @@ class UsersPage extends React.Component {
         );
       
     }else{
+      console.log(this.state.showDetail)
       return (
       <Layout>
       
       <div className="container-fluid container-pf-nav-pf-vertical container-cards-pf">
-      <button className="btn btn-default" type="button" onClick={this.back}>Back</button>
+      <button style={{display:'inline-block', width:'50px'}} className="btn btn-default" type="button" onClick={this.back}>Back</button>
+      <div style={{display:'inline-block', margin:'0 20px', transform:'translateY(3px)'}} className="card-pf-title">
+        {this.state.users[this.state.showDetail].name}
+      </div>
       
         <ComponentListView detail={this.state.detail}/>
         </div>
