@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
-import './standardTableView.css'
 import Pagination from './pagination'
 import TableFilter from './TableFilter'
 import tableview from './tableview.css'
 import DropdownMenu from './DropdownMenu'
 import DropdownTextbox from './DropdownTextbox'
+import StatusIcon from './StatusIcon'
 
 class StandardTableView extends React.Component {
   constructor(props){
@@ -155,20 +155,32 @@ class StandardTableView extends React.Component {
 
   setStatusInBatch=(status)=>{
     for(let i=0;i<this.paginatedDetail.length;i++){
-      console.log(this.paginatedDetail[i][0],status)
+      this.paginatedDetail[i][1].implementation_status = status;
     }
+    this.updateDetail();
   }
-  setImplementationStatus = (control1)=>{
+  setImplementationStatus = (controlSelected, indexInPage)=>{
     return (status)=>{
-      control1.implementation_status = status;
+      controlSelected.implementation_status = status;
+      this.updateDetail();
     }
   }
 
+  updateDetail = ()=>{
+    let start = this.state.numberPerPage*this.state.currentPage;
+    let end = start+this.state.numberPerPage;
+    let detail = this.state.detail.slice(0,start).concat(this.paginatedDetail).concat(this.state.detail.slice(end));
+    this.setState({
+      detail
+    })
+  }
+
   render() {
+    const Implementation_Status=['Not applicable', 'None','Unknown','Implemented','Planned','Partial', 'Complete'];
     let start = this.state.numberPerPage*this.state.currentPage;
     let end = start+this.state.numberPerPage;
     this.paginatedDetail = this.state.detail.slice(start,end);
-    console.log(this.paginatedDetail)
+    // console.log(start,end)
     
     let totalRecordNum = this.state.detail.length;
     // console.log('render',totalRecordNum)
@@ -184,7 +196,7 @@ class StandardTableView extends React.Component {
       <div className={tableview.row} style={{transform:'translateY(10%)'}}>
         <div style={{opacity:0}} id="selectMenu" className={tableview.left}>
           <span>Set status ...</span>
-          <DropdownMenu onSelect={this.setStatusInBatch} items={['Complete','Partial','Unknown','Planned','Not Applicable']}/>
+          <DropdownMenu onSelect={this.setStatusInBatch} items={Implementation_Status}/>
         </div>
         <div className={tableview.right}>
           <Pagination totalRecordNum={totalRecordNum} setNumberPerPage={this.setNumberPerPage()} setPageNumber={this.setPageNumber()}/>
@@ -197,7 +209,7 @@ class StandardTableView extends React.Component {
           <th>ControlName</th>
           <th>CoveredBy</th>
           <th colSpan="4">Narrative</th>
-          <th>Status</th>
+          <th >Status</th>
         </tr>
       </thead>
 
@@ -222,20 +234,10 @@ class StandardTableView extends React.Component {
               :(<div></div>)}
           </td>
 
-          <td>{control[1].implementation_status==='complete'?(
-            <div style={{fontSize: '1.2em',margin: '5px'}}>
-              <span className="pficon pficon-ok" style={{width:'20px'}}></span>
-            </div>
-          ):control[1].implementation_status==='partial'?(
-            <div style={{fontSize: '1.2em',margin: '5px'}}>
-              <span className="pficon pficon-warning-triangle-o" style={{width:'20px'}}></span>
-            </div>
-          ):(
-            <div style={{fontSize: '1.2em',margin: '5px'}}>
-              <span className="pficon pficon-error-circle-o" style={{width:'20px'}}></span>
-            </div>
-          )}
-          <DropdownMenu onSelect={this.setImplementationStatus(control[1])} items={['Not applicable', 'None','Unknown','Implemented','Planned','Partial', 'Complete']}/>
+          <td style={{whiteSpace: 'nowrap'}}>
+          <StatusIcon status={control[1].implementation_status}/>
+            <DropdownMenu value={control[1].implementation_status.split('_').map((word)=>(word.charAt(0).toUpperCase() + word.slice(1))).join(' ')} 
+            onSelect={this.setImplementationStatus(control[1],controlid)} items={Implementation_Status}/>
           </td>
           
         </tr>

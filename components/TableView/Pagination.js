@@ -42,7 +42,7 @@ export default class Pagination extends React.Component{
         numberPerPage:num,
         currPage:0
     })
-    // this.props.setNumberPerPage(num);
+    this.props.setNumberPerPage(num);
     this.props.setPageNumber(0);
 }
 

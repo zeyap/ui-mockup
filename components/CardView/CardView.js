@@ -7,47 +7,7 @@ class CardView extends React.Component {
     this.users = users;
   }
   componentDidMount() {
-    
-    var c3ChartDefaults = $().c3ChartDefaults();
-
-  
-
-  // Donut Chart Bottom Legend
-  for(let i=0;i<this.users.length;i++){
-    var donutData = {
-      type : 'donut',
-      columns: [
-        ['Satisfied', 2],
-        ['Noncompliant', i],
-        ['Partial', 2],
-      ],
-      // onclick: function (d, i) { console.log("onclick", d, i); },
-      // onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-      // onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-    };
-
-    var donutChartBottomConfig = c3ChartDefaults.getDefaultRelationshipDonutConfig();
-    donutChartBottomConfig.bindto = '#donut-chart-'+i;
-    donutChartBottomConfig.tooltip = {show: true};
-    donutChartBottomConfig.data = donutData;
-    donutChartBottomConfig.legend = {
-      show: true,
-      position: 'bottom'
-    };
-    donutChartBottomConfig.size = {
-      width: 271,
-      height: 191
-    };
-    donutChartBottomConfig.tooltip = {
-      contents: $().pfDonutTooltipContents
-    };
-
-    // for(let i=0;i<)
-
-    var donutChartBottomLegend = c3.generate(donutChartBottomConfig);
-    $().pfSetDonutChartTitle("#donut-chart-"+i, 4+i, "Controls");
-  }
-  
+    // this.drawChart()
 
     //run matchHeight jquery plugin
     this.matchHeight();
@@ -60,6 +20,43 @@ class CardView extends React.Component {
       else
       { $('.card-pf-view-single-select').removeClass('active'); $(this).addClass('active'); }
     });
+  }
+
+  drawChart = ()=>{
+    var c3ChartDefaults = $().c3ChartDefaults();
+
+    // Donut Chart Bottom Legend
+    for(let i=0;i<this.users.length;i++){
+      var donutData = {
+        type : 'donut',
+        columns: [
+          ['Satisfied', 2],
+          ['Noncompliant', i],
+          ['Partial', 2],
+        ],
+      };
+
+      var donutChartBottomConfig = c3ChartDefaults.getDefaultRelationshipDonutConfig();
+      donutChartBottomConfig.bindto = '#donut-chart-'+i;
+      donutChartBottomConfig.tooltip = {show: true};
+      donutChartBottomConfig.data = donutData;
+      donutChartBottomConfig.legend = {
+        show: true,
+        position: 'bottom'
+      };
+      donutChartBottomConfig.size = {
+        width: 271,
+        height: 191
+      };
+      donutChartBottomConfig.tooltip = {
+        contents: $().pfDonutTooltipContents
+      };
+
+      // for(let i=0;i<)
+
+      var donutChartBottomLegend = c3.generate(donutChartBottomConfig);
+      $().pfSetDonutChartTitle("#donut-chart-"+i, 4+i, "Controls");
+    }
   }
 
   matchHeight(){
@@ -78,7 +75,7 @@ class CardView extends React.Component {
         <div className="card-pf card-pf-view card-pf-view-select card-pf-view-single-select" onClick={this.props.onClickFunctions===undefined? null:this.props.onClickFunctions(i)}>
           <div className="card-pf-body" style={{height: '260px'}}>
             <div className="card-pf-top-element">
-              <div id={"donut-chart-"+i} className="example-donut-chart-bottom-legend"></div>
+              {/* <div id={"donut-chart-"+i} className="example-donut-chart-bottom-legend"></div> */}
             </div>
             <h2 className="card-pf-title text-center">
               {user.name}
