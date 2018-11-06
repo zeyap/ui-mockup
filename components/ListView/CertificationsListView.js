@@ -45,7 +45,7 @@ class CertificationsListView extends ListViewBase {
                 </div>
               </div>
 
-                {/* <ComplianceProgress app={app}/> */}
+                <ComplianceProgress app={app}/>
             </div>
           </div>
         </div>

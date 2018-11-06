@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import StandardTableView from '../TableView/StandardTableView'
 import ListViewBase from './ListViewBase'
-import ComplianceProgress from './ComplianceProgress'
+import ComplianceProgress from './StandardComplianceProgress'
 
 class StandardsListView extends ListViewBase {
 
