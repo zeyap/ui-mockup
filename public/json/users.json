@@ -1,10 +1,11 @@
 [
   {
-    "name": "Erlich Bachman"
+    "name": "Erlich Bachman",
+    "password":"123"
   },
   {
     "name": "Gilfoyle",
-    "compliance_url": "gilfoyle.json"
+    "password":"123"
   },
   {
     "name": "Richard Hendriks"
