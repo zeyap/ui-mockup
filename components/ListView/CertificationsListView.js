@@ -3,7 +3,7 @@ import StandardTableView from '../TableView/StandardTableView'
 import ListViewBase from './ListViewBase'
 import ComplianceProgress from './ComplianceProgress'
 
-class StandardsListView extends ListViewBase {
+class CertificationsListView extends ListViewBase {
 
   constructor(props){
     super(props);
@@ -36,7 +36,7 @@ class StandardsListView extends ListViewBase {
           </div>
           <div className="list-view-pf-main-info">
             <div className="list-view-pf-left">
-              <span className="fa fa-book list-view-pf-icon-sm"></span>
+              <span className="fa fa-file-o list-view-pf-icon-sm"></span>
             </div>
             <div className="list-view-pf-body">
               <div className="list-view-pf-description">
@@ -45,7 +45,7 @@ class StandardsListView extends ListViewBase {
                 </div>
               </div>
 
-                <ComplianceProgress app={app}/>
+                {/* <ComplianceProgress app={app}/> */}
             </div>
           </div>
         </div>
@@ -68,8 +68,8 @@ class StandardsListView extends ListViewBase {
                 <dd>{app.controlFamilies}</dd>
                 <dt>Total Controls: </dt>
                 <dd>{app.totalControls}</dd>
-                <dt>Inheriting Components: </dt>
-                <dd>{app.inheritingComponents?app.inheritingComponents.join(', '):''}</dd>
+                {/* <dt> Components: </dt>
+                <dd>{app.inheritingComponents?app.inheritingComponents.join(', '):''}</dd> */}
               </dl>
             </div>
           </div>
@@ -82,4 +82,4 @@ class StandardsListView extends ListViewBase {
 
 }
 
-export default StandardsListView;
+export default CertificationsListView;

@@ -35,7 +35,7 @@ module.exports.addStandardsControlFamilies = function(standards){
             })
             .then(data=>{
                 _=Object.assign(_,{
-                    controlFamilies: 0, totalControls: 0, inheritedCompliance: 0, proceduralControls: 0, technicalControls: 0
+                    controlFamilies: 0, totalControls: 0, inheritingComponents:[]
                 });
                 if(data !== null) {
                     let prevControl = undefined;
@@ -92,10 +92,11 @@ module.exports.getStandardsComplianceData = function(standards){
                     }
                 })
                 .then((doc)=>{
-                    if(doc !== null)
+                    if(doc !== null){
                     doc.satisfies.forEach((item)=>{
                         let targetStandard = standards[standardMap[caseHyphenInsensitive(item.standard_key)]];
                         if(targetStandard.satisfied===undefined){
+                            targetStandard.inheritingComponents.push(doc.name);
                             targetStandard = Object.assign(targetStandard,{
                                 satisfied: 0,
                                 partial: 0,
@@ -115,6 +116,7 @@ module.exports.getStandardsComplianceData = function(standards){
                             break;
                         }
                     })
+                    }
                     
                     return callback(arr, i,callback,standards);
                     
@@ -168,7 +170,7 @@ module.exports.getCertificationCompliance = function(certifications){
                 let _ = arr[i];
                 if(_.satisfied===undefined){
                     _ = Object.assign(_,{
-                        controlFamilies: 0, totalControls: 0, inheritedCompliance: 0, proceduralControls: 0, technicalControls: 0,
+                        controlFamilies: 0, totalControls: 0, 
 
                         satisfied: 0,
                         partial: 0,
@@ -181,7 +183,9 @@ module.exports.getCertificationCompliance = function(certifications){
                         return r.json()
                     }
                 }).then((doc)=>{
-                    if(doc !== null)
+                    if(doc !== null){
+                        console.log(standardsCompliance)
+                    // _.partiallyCompletedComponents.push()
                     for(let standardKey in doc.standards){
                         if(standardsCompliance[standardKey]===undefined) break;
                         for(let controlKey in doc.standards[standardKey]){
@@ -199,6 +203,7 @@ module.exports.getCertificationCompliance = function(certifications){
                                 break;
                             }
                         }
+                    }
                     }
                     return callback(arr, i+1,callback,certifications);
                 })

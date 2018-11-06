@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import Layout from '../../components/Layout';
-import StandardsListView from '../../components/ListView/StandardsListView';
+import CertificationsListView from '../../components/ListView/CertificationsListView';
 import constants from '../../core/constants';
 import {getCertificationCompliance} from '../../utils/open-control-utils.js';
 
@@ -34,10 +34,9 @@ class AppsPage extends React.Component {
   }
 
   render() {
-    // The HTML is rendered from components/ListView/StandardsListView.js
     return (
       <Layout className="container-fluid container-pf-nav-pf-vertical">
-        <StandardsListView apps={ this.state.apps }/>
+        <CertificationsListView apps={ this.state.apps }/>
       </Layout>
     );
   }
