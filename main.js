@@ -25,10 +25,30 @@ function render(location) {
     .catch(error => router.resolve(routes, { ...location, error }).then(renderComponent));
 }
 
+function cors(){
+  (function() {
+    var cors_api_host = 'cors-anywhere.herokuapp.com';
+    var cors_api_url = 'https://' + cors_api_host + '/';
+    var slice = [].slice;
+    var origin = window.location.protocol + '//' + window.location.host;
+    var open = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function() {
+        var args = slice.call(arguments);
+        var targetOrigin = /^https?:\/\/([^\/]+)/i.exec(args[1]);
+        if (targetOrigin && targetOrigin[0].toLowerCase() !== origin &&
+            targetOrigin[1] !== cors_api_host) {
+            args[1] = cors_api_url + args[1];
+        }
+        return open.apply(this, args);
+    };
+  })();
+}
+
 // Handle client-side navigation by using HTML5 History API
 // For more information visit https://github.com/ReactJSTraining/history/tree/master/docs#readme
 history.listen(render);
 render(history.getCurrentLocation());
+cors();
 
 // Eliminates the 300ms delay between a physical tap
 // and the firing of a click event on mobile browsers
