@@ -51,7 +51,9 @@ class UsersPage extends React.Component {
     if(this.state.showDetail===-1){
         return (
           <Layout>
+            
             <div className="container-fluid container-pf-nav-pf-vertical container-cards-pf">
+            <button style={{display:'block', width:'100px', margin: '20px'}} className="btn btn-default" type="button">Create New</button>
               {this.state.users.length?(<CardView users={ this.state.users} onClickFunctions={this.openForm}/>)
               :(<div></div>)}
             </div>
@@ -62,7 +64,6 @@ class UsersPage extends React.Component {
       console.log(this.state.showDetail)
       return (
       <Layout>
-      
       <div className="container-fluid container-pf-nav-pf-vertical container-cards-pf">
       <button style={{display:'inline-block', width:'50px'}} className="btn btn-default" type="button" onClick={this.back}>Back</button>
       <div style={{display:'inline-block', margin:'0 20px', transform:'translateY(3px)'}} className="card-pf-title">
