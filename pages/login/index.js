@@ -40,10 +40,17 @@ export default class Login extends React.Component{
   }
 
   logIn=()=>{
-    axios.get(ip+":"+port+"/"+loginUrl+this.state.userName)
+    axios.post(ip+":"+port+"/"+loginUrl,{
+      "username":this.state.userName,
+      "password":this.state.password
+    })
     .then((response)=>{
       // handle success
-      window.location="/standards"
+      window.location="/standards";
+      sessionStorage.setItem({
+        login:true,
+        username: this.state.userName
+      })
     })
     .catch((error) =>{
       // handle error
@@ -56,6 +63,11 @@ export default class Login extends React.Component{
     this.setState({
       userName: e.target.value,
       correct: true
+    })
+  }
+  getPassword = (e)=>{
+    this.setState({
+      password: e.target.value
     })
   }
 
@@ -85,7 +97,7 @@ export default class Login extends React.Component{
                 <div className="form-group">
                   <label className="sr-only"  htmlFor="exampleInputPassword1">Password
                   </label>
-                  <input type="password" className="form-control input-lg" id="exampleInputPassword1" placeholder="Password"/>
+                  <input type="password" onChange={this.getPassword} className="form-control input-lg" id="exampleInputPassword1" placeholder="Password"/>
                 </div>
                 {this.state.correct?(<div></div>):(<div style={{color:'#df3838'}}>Invalid Username or Password</div>)}
                 
