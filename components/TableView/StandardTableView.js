@@ -187,7 +187,9 @@ class StandardTableView extends React.Component {
     return (<div>
     <div className={tableview.row}>
       <TableFilter totalRecordNum={totalRecordNum} addFilter={this.addFilter} clearFilters={this.clearFilters}/>
+      <div style={{position:'absolute', right:'0'}}>Download as ... <DropdownMenu items={['Microsoft Word','YAML']}/></div>
     </div>
+
     {/* Table HTML */}
     <table className="table table-striped table-bordered table-hover" id="table1" style={{"minWidth":"0",tableLayout: "fixed", width: "100%"}}>
     <thead><tr>

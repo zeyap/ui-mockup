@@ -49,6 +49,22 @@ export default class TableFilter extends React.Component{
     })
     this.props.clearFilters();
   }
+  
+  deleteFilter = (key)=>{
+    return ()=>{
+      let filters = [...this.state.filters];
+      filters.splice(key,1);
+      this.setState({
+        filters
+      })
+      // this.props.clearFilters();
+      // for(let i=0;i<filters.length;i++){
+      //   let filter = filters[i].split(': ');
+      //   this.props.addFilter(filter[0], filter[1]);
+      // }
+      //TODO: finish here
+    }
+  }
 
   render(){
     // console.log(this.props.totalRecordNum)
@@ -74,7 +90,7 @@ export default class TableFilter extends React.Component{
       </div>
     </div>
   </div>
-  <div className={"col-sm-12 "+tableFilter.filter_inline}>
+  {this.state.filters.length>0?(<div className={"col-sm-12"}>
     <span><b>{this.props.totalRecordNum} Results </b></span>
     <span>Active filters:</span>
     <ul className={"list-inline "+tableFilter.list_inline}>
@@ -82,14 +98,15 @@ export default class TableFilter extends React.Component{
       <li key={key}>
         <span className="label label-info">
           {filter}
-          <a href="#"><span className="fa fa-times"></span></a>
+          <a onClick={this.deleteFilter(key)}><span className="fa fa-times"></span></a>
         </span>
       </li>
     ))}
       
     </ul>
     <span><a onClick={this.clearAllFilters}> Clear All Filters</a></span>
-  </div>
+  </div>):(<div></div>)}
+  
     </div>);
   }
 }

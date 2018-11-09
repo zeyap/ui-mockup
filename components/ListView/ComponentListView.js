@@ -63,9 +63,6 @@ class ComponentListView extends ListViewBase {
 
         <div className="list-group-item-container container-fluid hidden" style={{padding:'15px'}}>
           {/* <div class="btn-group"> */}
-         Download as ... <DropdownMenu items={['Microsoft Word','YAML']}/>
-          
-          <span style={{padding: '0 0.5em'}}></span>
             
             {/* <button type="button" class="btn btn-default"></button>
           </div> */}
