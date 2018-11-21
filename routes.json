@@ -5,6 +5,11 @@
     "chunk": "main"
   },
   {
+    "path": "/login",
+    "page": "./pages/login",
+    "chunk": "main"
+  },
+  {
     "path": "/home",
     "page": "./pages/home",
     "chunk": "main"
