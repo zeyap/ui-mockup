@@ -229,6 +229,8 @@ module.exports.getComponent = function(url,callback){
             totalControls:0
         };
         for(let standardKey in standardsCompliance){
+            // Assume content has been though validation, no need for
+            // validating implementation_status (e.g. Complete vs complete vs COMPLETE)
             let standard = standardsCompliance[standardKey];
             for(let item in standard){
                 meta.totalControls++;
