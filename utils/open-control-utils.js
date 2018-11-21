@@ -35,7 +35,7 @@ module.exports.addStandardsControlFamilies = function(standards){
             })
             .then(data=>{
                 _=Object.assign(_,{
-                    controlFamilies: 0, totalControls: 0, inheritedCompliance: 0, proceduralControls: 0, technicalControls: 0
+                    controlFamilies: 0, totalControls: 0, inheritingComponents:{}
                 });
                 if(data !== null) {
                     let prevControl = undefined;
@@ -81,6 +81,7 @@ module.exports.getStandardsComplianceData = function(standards){
             if(standardMap[standards[i].key]!==undefined)continue;
             standardMap[standards[i].key] = i;
         }
+        
         return fetch(constants.get_components_url).then(r=>r.json())
         .then(components=>{
             return components.forEachConsecutively(function(arr,i,callback){
@@ -92,30 +93,14 @@ module.exports.getStandardsComplianceData = function(standards){
                     }
                 })
                 .then((doc)=>{
-                    if(doc !== null)
-                    doc.satisfies.forEach((item)=>{
-                        let targetStandard = standards[standardMap[caseHyphenInsensitive(item.standard_key)]];
-                        if(targetStandard.satisfied===undefined){
-                            targetStandard = Object.assign(targetStandard,{
-                                satisfied: 0,
-                                partial: 0,
-                                noncompliant: targetStandard.totalControls
-                            })
-                        }
-                        switch(item.implementation_status){
-                            case 'complete':
-                            targetStandard.satisfied++;
-                            targetStandard.noncompliant--;
-                            break;
-                            case 'partial':
-                            targetStandard.partial++;
-                            targetStandard.noncompliant--;
-                            break;
-                            default: //'unknown', 'planned', 'not applicable'
-                            break;
+                    if(doc !== null){
+                    doc.satisfies.forEach((standardItem)=>{
+                        let targetStandard = standards[standardMap[caseHyphenInsensitive(standardItem.standard_key)]];
+                        if(targetStandard.inheritingComponents[doc.name]===undefined){
+                            targetStandard.inheritingComponents[doc.name] = _.url;
                         }
                     })
-                    
+                    }
                     return callback(arr, i,callback,standards);
                     
                 })
@@ -129,22 +114,26 @@ module.exports.getStandardsComplianceData = function(standards){
     // })
 }
 
-let formatComponent = function(doc, standardsCompliance){
-    if(doc !== null)
+let formatComponent = function(doc, standardsCompliance, compName){
+    if(doc !== null){
+        // console.log(doc)
+    standardsCompliance[compName]={};
+    let component=standardsCompliance[compName];
         doc.satisfies.forEach((item)=>{
-            standardsCompliance[item["standard_key"]] = standardsCompliance[item["standard_key"]]||{};
-            let standard = standardsCompliance[item["standard_key"]];
+            component[item["standard_key"]] = component[item["standard_key"]]||{};
+            let standard = component[item["standard_key"]];
             let control = item["control_key"];
             let status = item["implementation_status"];
             standard[control] = {};
             standard[control] = Object.assign(standard[control],item);
         })
+    }
 }
 
 
 module.exports.getCertificationCompliance = function(certifications){
     let standardsCompliance={};
-    // return new Promise((_resolve,_reject)=>{
+    
         return fetch(constants.get_components_url).then(r=>r.json())
         .then(components=>{
             return components.forEachConsecutively(function(arr,i,callback){
@@ -156,9 +145,8 @@ module.exports.getCertificationCompliance = function(certifications){
                     }
                 })
                 .then((doc)=>{
-                    formatComponent(doc, standardsCompliance);    
+                    formatComponent(doc, standardsCompliance, _.name);
                     return callback(arr, i,callback,standardsCompliance);
-                    
                 })
             })
         
@@ -168,35 +156,64 @@ module.exports.getCertificationCompliance = function(certifications){
                 let _ = arr[i];
                 if(_.satisfied===undefined){
                     _ = Object.assign(_,{
-                        controlFamilies: 0, totalControls: 0, inheritedCompliance: 0, proceduralControls: 0, technicalControls: 0,
-
-                        satisfied: 0,
-                        partial: 0,
-                        noncompliant: 0
+                        controlFamilies: 0, totalControls: 0, 
+                        standards:[],
+                        completeComponents: [],
+                        incompleteComponents: []
                     })
                 }
+                
                 return fetch(_.url).then(r=>{
                     if(r.url.indexOf('undefined') >=0) return null;
                     else{
                         return r.json()
                     }
-                }).then((doc)=>{
-                    if(doc !== null)
-                    for(let standardKey in doc.standards){
-                        if(standardsCompliance[standardKey]===undefined) break;
-                        for(let controlKey in doc.standards[standardKey]){
-                            _.totalControls++;
-                            if(standardsCompliance[standardKey][controlKey]==undefined)continue;
-                            switch(standardsCompliance[standardKey][controlKey].implementation_status){
-                                case 'complete':
-                                _.satisfied++;
-                                break;
-                                case 'patrial':
-                                _.partial++;
-                                break;
-                                default:
-                                _.noncompliant++;
-                                break;
+                }).then((doc)=>{//certification
+                    
+                    if(doc !== null){
+                        for(let standardKey in doc.standards){
+                            _.standards.push(standardKey);
+                            for(let control in  doc.standards[standardKey]){
+                                _.totalControls++;
+                            }
+                        }
+                        
+                        for(let componentKey in standardsCompliance){
+                            
+                            let component = standardsCompliance[componentKey];
+                            let complete = 0;
+                            let partial = 0;
+                            let noncompliant = 0;
+                            
+                            for(let standardKey in component){
+                                let controls = component[standardKey];
+                                for(let controlKey in controls){
+                                    if(doc.standards[standardKey][controlKey]!==undefined){
+                                        switch(controls[controlKey].implementation_status){
+                                            case 'complete':
+                                            complete++;
+                                            break;
+                                            case 'partial':
+                                            partial++;
+                                            break;
+                                            default:
+                                            noncompliant++;
+                                            break;
+                                        }
+                                    }
+                                    
+                                }
+                            }
+
+                            if(complete === _.totalControls){
+                                _.completeComponents.push(componentKey);
+                            }else{
+                                _.incompleteComponents.push({
+                                    name:componentKey,
+                                    complete,
+                                    partial,
+                                    noncompliant
+                                });
                             }
                         }
                     }
@@ -216,22 +233,22 @@ module.exports.getComponents = function(callback){
       .catch(e => console.log(e));
 }
 
-module.exports.getComponent = function(url,callback){
+module.exports.getComponent = function(url,name,callback){
     fetch(url).then(r=>r.json())
     .then(data=>{
         //format data
         let standardsCompliance={};
-        formatComponent(data, standardsCompliance);
+        formatComponent(data, standardsCompliance,name);
         let meta = {
             satisfied: 0,
             partial: 0,
             noncompliant: 0,
             totalControls:0
         };
-        for(let standardKey in standardsCompliance){
+        for(let standardKey in standardsCompliance[name]){
             // Assume content has been though validation, no need for
             // validating implementation_status (e.g. Complete vs complete vs COMPLETE)
-            let standard = standardsCompliance[standardKey];
+            let standard = standardsCompliance[name][standardKey];
             for(let item in standard){
                 meta.totalControls++;
                 switch(standard[item].implementation_status){
@@ -248,7 +265,7 @@ module.exports.getComponent = function(url,callback){
             }
             standard = Object.assign(standard,meta);
         }
-        callback(standardsCompliance);
+        callback(standardsCompliance[name]);
     })
     .catch(e=>console.log(e));
 }

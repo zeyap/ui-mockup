@@ -32,7 +32,6 @@ class ComponentListView extends ListViewBase {
 
   render() {
     // eslint-disable-line no-use-before-define
-    
     return (
       <div className="list-group list-view-pf list-view-pf-view">
         {this.state.detail.map((app,i) =>
