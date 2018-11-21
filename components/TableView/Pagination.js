@@ -27,10 +27,12 @@ export default class Pagination extends React.Component{
           if(page===0){
               $('.pagination-pf-back').children().addClass('disabled');
               $('.pagination-pf-forward').children().removeClass('disabled');
-          }
-          if(page===totalPage-1){
+          }else if(page===totalPage-1){
               $('.pagination-pf-back').children().removeClass('disabled');
               $('.pagination-pf-forward').children().addClass('disabled');
+          }else{
+              $('.pagination-pf-back').children().removeClass('disabled');
+              $('.pagination-pf-forward').children().removeClass('disabled');
           }
       }
   }
@@ -40,7 +42,7 @@ export default class Pagination extends React.Component{
         numberPerPage:num,
         currPage:0
     })
-    // this.props.setNumberPerPage(num);
+    this.props.setNumberPerPage(num);
     this.props.setPageNumber(0);
 }
 
