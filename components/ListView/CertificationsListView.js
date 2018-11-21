@@ -23,7 +23,7 @@ class CertificationsListView extends ListViewBase {
 
   render() {
     // eslint-disable-line no-use-before-define
-    
+    // console.log(this.props.apps)
     return (
       <div className="list-group list-view-pf list-view-pf-view">
 
@@ -44,7 +44,6 @@ class CertificationsListView extends ListViewBase {
                   { app.name }
                 </div>
               </div>
-
                 <ComplianceProgress app={app}/>
             </div>
           </div>
@@ -63,14 +62,23 @@ class CertificationsListView extends ListViewBase {
             <div className="col-md-3">
             </div>
             <div className="col-md-9">
-              <dl className="dl-horizontal">
-                <dt>Control Familes:</dt>
-                <dd>{app.controlFamilies}</dd>
+            {app.totalControls?(<dl className="dl-horizontal">
                 <dt>Total Controls: </dt>
                 <dd>{app.totalControls}</dd>
-                {/* <dt> Components: </dt>
-                <dd>{app.inheritingComponents?app.inheritingComponents.join(', '):''}</dd> */}
-              </dl>
+                <dt>Completed Components: </dt>
+                <dd>{app.completeComponents.length>0?app.completeComponents.map((comp,id)=>
+                (<div key={id} style={{margin: "0 0.5em 0 0"}}>
+                <a>{comp}</a></div>)):(<div></div>)}</dd>
+                <dt>Partially Completed: </dt>
+                <dd>{app.incompleteComponents.length>0?app.incompleteComponents.map((comp,id)=>
+                (<div key={id} style={{margin: "0 0.5em 0 0"}}>
+                <a id={"componentTooltip-"+id} data-toggle="tooltip" data-placement="top" 
+                data-original-title={'Completed: '+comp.complete+'/'+app.totalControls+'; '+'Partially: '+comp.partial+'/'+app.totalControls+'; '+'Non-compliant: '+comp.noncompliant+'/'+app.totalControls}>
+                 {comp.name}</a></div>)):(<div></div>)}</dd>
+              </dl>)
+              :(<dl className="dl-horizontal">
+              </dl>)}
+              
             </div>
           </div>
         </div>

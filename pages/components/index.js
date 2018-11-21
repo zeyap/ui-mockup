@@ -31,8 +31,7 @@ class UsersPage extends React.Component {
   openForm = (i)=>{
     return (function(){
       //request component
-      getComponent(this.state.users[i].url,data=>{
-        
+      getComponent(this.state.users[i].url, this.state.users[i].name, data=>{
         this.setState({
           detail: data,
           showDetail:i

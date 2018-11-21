@@ -2,11 +2,16 @@ import React, { PropTypes } from 'react';
 import StandardTableView from '../TableView/StandardTableView'
 import ListViewBase from './ListViewBase'
 import ComplianceProgress from './StandardComplianceProgress'
+import {getComponent}  from '../../utils/open-control-utils.js';
 
 class StandardsListView extends ListViewBase {
 
   constructor(props){
     super(props);
+    this.state={
+      componentCompletedControls:0,
+      componentPartialControls:0
+    }
   }
   componentDidMount() {
     this.bindExpand();
@@ -19,6 +24,33 @@ class StandardsListView extends ListViewBase {
 
   componentWillUnmount(){
     this.unbind();
+  }
+
+  showComponentDetail = (standardKey, componentUrl,id,compName)=>{
+    return ()=>{
+      let standardCompliance={
+        satisfied:0,
+        partial:0
+      };
+      getComponent(componentUrl,compName,data=>{
+        standardCompliance=data[standardKey.split(/[\s]+[-]*/).join('-')];
+
+        let tooltip = $('#componentTooltip-'+id);
+        tooltip.tooltip('hide');
+        this.setState({
+          componentCompletedControls:standardCompliance.satisfied,
+          componentPartialControls:standardCompliance.partial
+        });
+        setTimeout(() => {
+          tooltip.tooltip('show');
+        }, 300);
+      });
+      
+    }
+  }
+
+  openComponent = ()=>{
+
   }
 
   render() {
@@ -44,7 +76,6 @@ class StandardsListView extends ListViewBase {
                   { app.name }
                 </div>
               </div>
-
                 <ComplianceProgress app={app}/>
             </div>
           </div>
@@ -69,7 +100,12 @@ class StandardsListView extends ListViewBase {
                 <dt>Total Controls: </dt>
                 <dd>{app.totalControls}</dd>
                 <dt>Inheriting Components: </dt>
-                <dd>{app.inheritingComponents?app.inheritingComponents.join(', '):''}</dd>
+                <dd>{app.inheritingComponents?Object.entries(app.inheritingComponents).map((comp,id)=>
+                (<div key={id} style={{margin: "0 0.5em 0 0"}}>
+                <a id={"componentTooltip-"+id} onMouseEnter={this.showComponentDetail(app.key,comp[1],id,comp[0])} onClick={this.openComponent(app.key)} data-toggle="tooltip" data-placement="top" 
+                data-original-title={'Completed: '+this.state.componentCompletedControls+'/'+app.totalControls+';   '+'Partially: '+this.state.componentPartialControls+'/'+app.totalControls}>
+                 {comp[0]}</a></div>))
+                :(<div></div>)}</dd>
               </dl>
             </div>
           </div>
