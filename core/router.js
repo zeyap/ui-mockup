@@ -49,6 +49,7 @@ function resolve(routes, context) {
     // Check if the route has any data requirements, for example:
     // { path: '/tasks/:id', data: { task: 'GET /api/tasks/$id' }, page: './pages/task' }
     if (route.data) {
+      
       // Load page component and all required data in parallel
       const keys = Object.keys(route.data);
       return Promise.all([

@@ -6,12 +6,12 @@ import ComponentListView from '../../components/ListView/ComponentListView'
 import {getComponents, getComponent} from '../../utils/open-control-utils.js';
 import history from '../../core/history';
 
-class UsersPage extends React.Component {
+class AppsPage extends React.Component {
   constructor(props){
+    // console.log(window.location.pathname);
     super(props)
     this.state = { users: [], showDetail: -1 };
   }
-  
 
   componentDidMount() {
     document.title = 'Security Central | Components';
@@ -78,4 +78,4 @@ class UsersPage extends React.Component {
 
 }
 
-export default UsersPage;
+export default AppsPage;

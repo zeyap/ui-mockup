@@ -50,7 +50,7 @@ class StandardsListView extends ListViewBase {
   }
 
   openComponent = ()=>{
-
+    window.location = '/components/id';
   }
 
   render() {
@@ -102,7 +102,7 @@ class StandardsListView extends ListViewBase {
                 <dt>Inheriting Components: </dt>
                 <dd>{app.inheritingComponents?Object.entries(app.inheritingComponents).map((comp,id)=>
                 (<div key={id} style={{margin: "0 0.5em 0 0"}}>
-                <a id={"componentTooltip-"+id} onMouseEnter={this.showComponentDetail(app.key,comp[1],id,comp[0])} onClick={this.openComponent(app.key)} data-toggle="tooltip" data-placement="top" 
+                <a id={"componentTooltip-"+id} onMouseEnter={this.showComponentDetail(app.key,comp[1],id,comp[0])} onClick={this.openComponent} data-toggle="tooltip" data-placement="top" 
                 data-original-title={'Completed: '+this.state.componentCompletedControls+'/'+app.totalControls+';   '+'Partially: '+this.state.componentPartialControls+'/'+app.totalControls}>
                  {comp[0]}</a></div>))
                 :(<div></div>)}</dd>

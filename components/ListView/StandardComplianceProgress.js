@@ -27,16 +27,15 @@ export default class ComplianceProgress extends React.Component {
       <span className="pficon pficon-applications"></span>
       <strong>{ Object.keys(this.app.inheritingComponents).length }</strong> Inheriting Components</div>
         </div>)
-        
         :(<div className="list-view-pf-additional-info">
       
-      {this.app.totalControls===0?(<div className="list-view-pf-additional-info-item">
+      {this.app.totalControls===0?
+      (<div className="list-view-pf-additional-info-item">
         <span className="pficon pficon-orders"></span>
-        
         Standard File Not Available
-        </div>):(<div className="list-view-pf-additional-info-item">
+        </div>)
+        :(<div className="list-view-pf-additional-info-item">
         <span className="pficon pficon-orders"></span>
-        
         <strong>{ this.app.totalControls }</strong> Security Controls
         </div>)}
       
