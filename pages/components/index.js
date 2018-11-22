@@ -76,9 +76,11 @@ class AppsPage extends React.Component {
     if(this.state.showDetail===-1){
         return (
           <Layout>
-            
-            <div className="container-fluid container-pf-nav-pf-vertical container-cards-pf">
-            <button style={{display:'block', width:'100px', margin: '20px'}} className="btn btn-default" type="button">Create New</button>
+            <div className="container-fluid container-pf-nav-pf-vertical">
+            <div style={{margin: '0 0 0 20px', height:'5.5em'}}><h1 style={{display:'inline-block'}}>Components</h1>
+            <button style={{display:'inline-block',float:'right',width:'100px', margin: '20px'}} className="btn btn-primary" type="button">Create New</button>
+            </div>
+
               {this.state.users.length?(<CardView users={ this.state.users} onClickFunctions={this.openForm}/>)
               :(<div></div>)}
             </div>
@@ -90,10 +92,16 @@ class AppsPage extends React.Component {
       return (
       <Layout>
       <div className="container-fluid container-pf-nav-pf-vertical container-cards-pf">
-      <button style={{display:'inline-block', width:'50px'}} className="btn btn-default" type="button" onClick={this.back}>Back</button>
-      <div style={{display:'inline-block', margin:'0 20px', transform:'translateY(3px)'}} className="card-pf-title">
-        {this.state.users[this.state.showDetail].name}
-      </div>
+      
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item"><a onClick={this.back}>{this.props.route.params.param==='detail'?'Standards':'Components'}</a></li>
+          <li className="breadcrumb-item active" aria-current="page">Component Implementation Form</li>
+        </ol>
+      </nav>
+
+      <h1 >{this.state.users[this.state.showDetail].name}</h1>
+
         <ComponentListView detail={this.state.detail}/>
         </div>
       </Layout>)

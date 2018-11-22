@@ -42,6 +42,7 @@ class AppsPage extends React.Component {
     // The HTML is rendered from components/ListView/StandardsListView.js
     return (
       <Layout className="container-fluid container-pf-nav-pf-vertical">
+      <h1>Standards</h1>
         <StandardsListView apps={ this.state.apps }/>
       </Layout>
     );
