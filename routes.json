@@ -45,7 +45,7 @@
     "page": "./pages/certifications"
   },
   {
-    "path":"/components/:component",
+    "path":"/components/:param",
     "page":"./pages/components"
   },
   {

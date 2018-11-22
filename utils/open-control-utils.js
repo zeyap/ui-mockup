@@ -178,9 +178,9 @@ module.exports.getCertificationCompliance = function(certifications){
                             }
                         }
                         
-                        for(let componentKey in standardsCompliance){
+                        for(let componentName in standardsCompliance){
                             
-                            let component = standardsCompliance[componentKey];
+                            let component = standardsCompliance[componentName];
                             let complete = 0;
                             let partial = 0;
                             let noncompliant = 0;
@@ -206,10 +206,10 @@ module.exports.getCertificationCompliance = function(certifications){
                             }
 
                             if(complete === _.totalControls){
-                                _.completeComponents.push(componentKey);
+                                _.completeComponents.push(componentName);
                             }else{
                                 _.incompleteComponents.push({
-                                    name:componentKey,
+                                    name:componentName,
                                     complete,
                                     partial,
                                     noncompliant

@@ -8,7 +8,6 @@ import history from '../../core/history';
 
 class AppsPage extends React.Component {
   constructor(props){
-    // console.log(window.location.pathname);
     super(props)
     this.state = { users: [], showDetail: -1 };
   }
@@ -24,14 +23,40 @@ class AppsPage extends React.Component {
   getUsers() {
     let that = this;
     getComponents(data=>{
-      that.setState({users : data})
+      that.setState({users : data});
+
+      if(this.props.route.params.param==='detail'){
+        let component = JSON.parse(window.sessionStorage.getItem('component'));
+        for(let i=0;i<data.length;i++){
+          if(data[i].url === component.url){
+            (that.openForm(i,component.standard))();
+            break;
+          }
+        }
+        that.back = ()=>{
+          window.location = '/standards';
+          window.sessionStorage.setItem('component',null);
+        }
+      }
+
     })
   }
 
-  openForm = (i)=>{
+  openForm = (i,filterStandard)=>{
     return (function(){
       //request component
       getComponent(this.state.users[i].url, this.state.users[i].name, data=>{
+
+        if(filterStandard){
+          filterStandard = filterStandard.split(/[\s|-]+/).join('-');
+          //filter 'data'
+          for(let standardKey in data){
+            if(filterStandard===standardKey){
+              data = {[standardKey]:data[standardKey]};
+            }
+          }
+        }
+
         this.setState({
           detail: data,
           showDetail:i
@@ -47,6 +72,7 @@ class AppsPage extends React.Component {
   }
 
   render() {
+
     if(this.state.showDetail===-1){
         return (
           <Layout>
@@ -68,7 +94,6 @@ class AppsPage extends React.Component {
       <div style={{display:'inline-block', margin:'0 20px', transform:'translateY(3px)'}} className="card-pf-title">
         {this.state.users[this.state.showDetail].name}
       </div>
-      
         <ComponentListView detail={this.state.detail}/>
         </div>
       </Layout>)
