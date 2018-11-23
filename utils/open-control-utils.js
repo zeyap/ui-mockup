@@ -38,7 +38,6 @@ var formatStandard = function(standard){
         }
     }
     return formatted;
-
 }
 
 module.exports.addStandardsControlFamilies = function(standards){
@@ -49,12 +48,12 @@ module.exports.addStandardsControlFamilies = function(standards){
         });
         if(constants.standards_url[_.key]===undefined){
             return callback(arr, i,callback,standards);
-        }else return axios.get(constants.standards_url[_.key]+'.yaml').then(r=>{
+        }else return axios.get(constants.standards_url[_.key]).then(r=>{
                 return formatStandard(r.data);
             })
             .then(data=>{
-                console.log(data)
                 if(data !== null) {
+                    
                     let prevControl = undefined;
                     for(let control in data){
                         if(control==='name'||control==='description'||control==='key')continue;
@@ -90,44 +89,42 @@ var caseHyphenInsensitive = function(key){
 * @author zeyap
 */
 module.exports.getStandardsComplianceData = function(standards){
-    // console.log(standards)
-    // return new Promise((_resolve,_reject)=>{
-        var standardMap={} //standard_key to index in array 'standards'
-        for(let i=0;i<standards.length;i++){
-            if(standardMap[standards[i].key]!==undefined)continue;
-            standardMap[standards[i].key] = i;
-        }
-        
-        return fetch(constants.get_components_url).then(r=>r.json())
-        .then(components=>{
-            return components.forEachConsecutively(function(arr,i,callback){
-                let _ = arr[i];
-                return fetch(_.url).then(r=>{
-                    if(r.url.indexOf('undefined') >=0) return null;
-                    else{
-                        return r.json()
+
+    var standardMap={} //standard_key to index in array 'standards'
+    for(let i=0;i<standards.length;i++){
+        if(standardMap[standards[i].key]!==undefined)continue;
+        standardMap[standards[i].key] = i;
+    }
+    
+    return fetch(constants.get_components_url).then(r=>r.json())
+    .then(components=>{
+        return components.forEachConsecutively(function(arr,i,callback){
+            let _ = arr[i];
+            return fetch(_.url).then(r=>{
+                if(r.url.indexOf('undefined') >=0) return null;
+                else{
+                    return r.json()
+                }
+            })
+            .then((doc)=>{
+                if(doc !== null){
+                doc.satisfies.forEach((standardItem)=>{
+                    let targetStandard = standards[standardMap[caseHyphenInsensitive(standardItem.standard_key)]];
+                    if(targetStandard.inheritingComponents[doc.name]===undefined){
+                        targetStandard.inheritingComponents[doc.name] = _.url;
                     }
                 })
-                .then((doc)=>{
-                    if(doc !== null){
-                    doc.satisfies.forEach((standardItem)=>{
-                        let targetStandard = standards[standardMap[caseHyphenInsensitive(standardItem.standard_key)]];
-                        if(targetStandard.inheritingComponents[doc.name]===undefined){
-                            targetStandard.inheritingComponents[doc.name] = _.url;
-                        }
-                    })
-                    }
-                    return callback(arr, i,callback,standards);
-                    
-                })
+                }
+                return callback(arr, i,callback,standards);
                 
             })
+            
+        })
     })
-        // .catch(e=>{
-        //     console.log(e)
-        //     _reject('There are issues when fetching components');
-        // })
-    // })
+    .catch(e=>{
+        console.log(e)
+        _reject('There are issues when fetching components');
+    })
 }
 
 let formatComponent = function(doc, standardsCompliance, compName){
@@ -148,95 +145,70 @@ let formatComponent = function(doc, standardsCompliance, compName){
 
 
 module.exports.getCertificationCompliance = function(certifications){
-    let standardsCompliance={};
-    
-        return fetch(constants.get_components_url).then(r=>r.json())
-        .then(components=>{
-            return components.forEachConsecutively(function(arr,i,callback){
-                let _ = arr[i];
-                return fetch(_.url).then(r=>{
-                    if(r.url.indexOf('undefined') >=0) return null;
-                    else{
-                        return r.json()
-                    }
-                })
-                .then((doc)=>{
-                    formatComponent(doc, standardsCompliance, _.name);
-                    return callback(arr, i,callback,standardsCompliance);
-                })
+    return certifications.forEachConsecutively(function(arr,i,callback){
+        let _ = arr[i];
+        if(_.satisfied===undefined){
+            _ = Object.assign(_,{
+                controlFamilies: 0, totalControls: 0, 
+                standards:[],
+                completeComponents: [],
+                incompleteComponents: []
             })
+        }
         
-        })
-        .then(standardsCompliance=>{
-            return certifications.forEachConsecutively(function(arr,i,callback){
-                let _ = arr[i];
-                if(_.satisfied===undefined){
-                    _ = Object.assign(_,{
-                        controlFamilies: 0, totalControls: 0, 
-                        standards:[],
-                        completeComponents: [],
-                        incompleteComponents: []
-                    })
-                }
+        if(_.url===undefined){
+            return callback(arr, i+1,callback,certifications);
+        }else return axios.get(constants.remote_address+_.url).then(r=>{
+            return r.data;
+        }).then((cert)=>{//certification
+        
+            if(cert !== null){
+                const doc = cert[0];
+                // console.log(doc)
+                _.totalControls = doc.controls.length;
                 
-                return fetch(_.url).then(r=>{
-                    if(r.url.indexOf('undefined') >=0) return null;
-                    else{
-                        return r.json()
-                    }
-                }).then((doc)=>{//certification
-                    
-                    if(doc !== null){
-                        for(let standardKey in doc.standards){
-                            _.standards.push(standardKey);
-                            for(let control in  doc.standards[standardKey]){
-                                _.totalControls++;
-                            }
-                        }
-                        
-                        for(let componentName in standardsCompliance){
-                            
-                            let component = standardsCompliance[componentName];
-                            let complete = 0;
-                            let partial = 0;
-                            let noncompliant = 0;
-                            
-                            for(let standardKey in component){
-                                let controls = component[standardKey];
-                                for(let controlKey in controls){
-                                    if(doc.standards[standardKey][controlKey]!==undefined){
-                                        switch(controls[controlKey].implementation_status){
-                                            case 'complete':
-                                            complete++;
-                                            break;
-                                            case 'partial':
-                                            partial++;
-                                            break;
-                                            default:
-                                            noncompliant++;
-                                            break;
-                                        }
-                                    }
-                                    
-                                }
-                            }
+                let compliance = JSON.parse(sessionStorage.getItem('user'));
+                let complianceMap = {};
+                for(let i=0;i<compliance.length;i++){
+                    complianceMap[compliance[i].Control] = compliance[i].Status;
+                }
 
-                            if(complete === _.totalControls){
-                                _.completeComponents.push(componentName);
-                            }else{
-                                _.incompleteComponents.push({
-                                    name:componentName,
-                                    complete,
-                                    partial,
-                                    noncompliant
-                                });
-                            }
-                        }
+                let complete = 0;
+                let partial = 0;
+                let noncompliant = 0;
+
+                for(let i=0;i<doc.controls.length;i++){
+                    
+                    let status = complianceMap[doc.controls[i]];
+                    if(status === undefined)continue;
+
+                    switch(status){
+                        case 1:
+                        complete++;
+                        break;
+                        case 2:
+                        partial++;
+                        break;
+                        default:
+                        noncompliant++;
+                        break;      
                     }
-                    return callback(arr, i+1,callback,certifications);
-                })
-        });
-    })
+
+                    if(complete === _.totalControls){
+                        _.completeComponents.push(componentName);
+                    }else{
+                        _.incompleteComponents.push({
+                            name:componentName,
+                            complete,
+                            partial,
+                            noncompliant
+                        });
+                    }
+                }
+            }
+            return callback(arr, i+1,callback,certifications);
+        })
+    });
     
 }
 

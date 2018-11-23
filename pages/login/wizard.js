@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 
-export var wizard = function(id) {
+export var wizard = function(id, finishCallback) {
     var self = this, modal, tabs, tabCount, tabLast, currentGroup, currentTab, contents;
     self.id = id;
+    self.finishCallback = finishCallback;
 
     $(self.id).click(function() {
         self.init(this)
@@ -84,7 +85,7 @@ export var wizard = function(id) {
         $(self.modal + " .wizard-pf-sidebar .list-group-item.active").removeClass("active");
 
         self.updateToCurrentPage();
-      }, 3000);
+      }, 1000);
 
       //initialize click listeners
       self.tabGroupSelect();
@@ -249,11 +250,12 @@ export var wizard = function(id) {
     };
 
     // Next button clicked
-    this.nextBtnClicked = function() {
+    this.nextBtnClicked = ()=> {
       $('body').on('click', self.modal + " .wizard-pf-next", function() {
         if (self.currentTab == self.tabSummary) {
           self.wizardPaging(1);
           self.finish();
+          self.finishCallback();
         } else {
           // go forward a page (i.e. +1)
           self.wizardPaging(1);
@@ -383,13 +385,17 @@ export var wizard = function(id) {
         $(self.modal + " .wizard-pf-close").removeClass("hidden");
         $(self.modal + " .wizard-pf-process").addClass("hidden");
         $(self.modal + " .wizard-pf-complete").removeClass("hidden");
-      }, 3000);
+      }, 1000);
     };
   };
 
 export class Wizard extends React.Component{
     constructor(props){
         super(props)
+        
+    }
+    componentDidMount(){
+      var completeWizard = new wizard(".btn.wizard-pf-complete", this.props.settings.finishCallback);
     }
     collapse = (id)=>{
         return ()=>{
@@ -454,7 +460,7 @@ export class Wizard extends React.Component{
                     return(<div key={'item'+index} className="form-group required">
                     <label className="col-sm-2 control-label required-pf" htmlFor="textInput-markup" required>{item}</label>
                     <div className="col-sm-10">
-                      <input type="text" className="detailsName form-control"/>
+                      <input type="text" onChange={substep.callbacks[index]} className="detailsName form-control"/>
                     </div>
                   </div>)
                   else return (<div key={'item'+index} className="form-group">
@@ -475,14 +481,16 @@ export class Wizard extends React.Component{
                 <p className="blank-slate-pf-secondary-action"></p>
               </div>
               <div className="wizard-pf-complete blank-slate-pf hidden">
-                <div className="wizard-pf-success-icon"><span className="glyphicon glyphicon-ok-circle"></span></div>
+              {this.props.success?
+              (<div><div className="wizard-pf-success-icon"><span className="glyphicon glyphicon-ok-circle"></span></div>
                 <h3 className="blank-slate-pf-main-action">Success</h3>
-                <p className="blank-slate-pf-secondary-action">You'll be sent a verification email for registration. </p>
-                <button type="button" className="btn btn-lg btn-primary">
-                  Resend
-                </button>
-
+                <p className="blank-slate-pf-secondary-action">You can now log in with your new account. </p></div>
+              ):(<div><div className="wizard-pf-success-icon"><span style={{color:'#b3000c'}} className="glyphicon glyphicon-remove-circle"></span></div>
+                <h3 className="blank-slate-pf-main-action">Failed to create a new account</h3>
+                <p className="blank-slate-pf-secondary-action">Please check your network connection or contact repository owners to fix your issue. </p>
+              </div>)}
               </div>
+                
             </div>)
             }
             )}

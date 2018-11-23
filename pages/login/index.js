@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import {wizard, Wizard} from './wizard';
+import {Wizard} from './wizard';
 import axios from 'axios';
 import constants from '../../core/constants'
-const [remote_address,loginUrl] = [constants.remote_address, constants.loginUrl];
+const [remote_address,loginUrl,createUserUrl] = [constants.remote_address, constants.loginUrl, constants.createUserUrl];
 
 export default class Login extends React.Component{
   constructor(props){
@@ -13,30 +13,55 @@ export default class Login extends React.Component{
           title:'Registration',
           substeps:[{name:'Sign up Information',
           items:['Username','Password','Email'],
+          callbacks:[(evt)=>{//onUsernameChange
+            this.setState({newUsername:evt.target.value})
+          },
+          (evt)=>{ //onPasswordChange
+            this.setState({newPassword:evt.target.value})
+          },()=>{}],
           required:[true,true,false]}]
         },{
           title:'Choose your identity',
           substeps:[{name:'Identity',
           items:['Identity'],
+          callbacks:[],
           required:[true]}]
         },{
           title:'Verification',
           substeps:[{name:'Verification',items:[]}]
-        }]
-      }
+        }],
+        finishCallback:()=>{
+          axios.put(remote_address+createUserUrl, {
+            "username":this.state.newUsername,
+            "password":this.state.newPassword
+          }).then((r)=>{
+            //if r is ...
+            this.setState({createSuccess:true})
+          }).catch((e)=>{
+            if(e.response){
+              console.log(e.response);
+              this.setState({createSuccess:false})
+            }
+          })
+        }
+      };
 
       this.state={
         userName:'',
         password:'',
-        correct: true
+        correct: true,
+
+        newUsername:'',
+        newPassword:'',
+        createSuccess: false
       }
   }
 
   componentDidMount(){
-    $(document).ready(function() {
-      //initialize wizard
-      var completeWizard = new wizard(".btn.wizard-pf-complete");
-    });
+    // $(document).ready(function() {
+    //   //initialize wizard
+      
+    // });
   }
 
   logIn=()=>{
@@ -45,18 +70,35 @@ export default class Login extends React.Component{
       "password":this.state.password
     })
     .then((response)=>{
+      console.log('success')
+      let compliance=[];
+      this.getUserCompliance((data)=>{
+        compliance = data;
+        sessionStorage.setItem('user',JSON.stringify({
+          login:true,
+          username: this.state.userName,
+          compliance: compliance
+        }));
+      });
       // handle success
       window.location="/standards";
-      sessionStorage.setItem({
-        login:true,
-        username: this.state.userName
-      })
+
     })
     .catch((error) =>{
+      if(error.response){
+        console.log(error.response);
+        this.setState({correct:false})
+      }
       // handle error
-      console.log(error);
-      this.setState({correct:false})
+      
     })
+  }
+
+  getUserCompliance = (callback)=>{
+    axios.get(remote_address+constants.getUserCompliance+this.state.userName)
+    .then(r=>{
+      callback(r.data);
+    });
   }
 
   showUserName = (e)=>{
@@ -131,7 +173,7 @@ export default class Login extends React.Component{
 {/* <!-- login-pf-page --> */}
 
 </div>
-<Wizard settings={this.wizardSettings}/>
+<Wizard settings={this.wizardSettings} success={this.state.createSuccess}/>
 </div>);
   }
 }
