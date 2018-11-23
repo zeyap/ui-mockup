@@ -28,6 +28,7 @@ module.exports.addStandardsControlFamilies = function(standards){
         let _ = arr[i];
         return fetch(constants.standards_url[_.key]).then(r=>{
                 if(r.url.indexOf('undefined')===-1){
+                    console.log(r.json())
                     return r.json();
                 }else{
                     return null;

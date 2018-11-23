@@ -1,6 +1,13 @@
 /* *
   Application Constants
  */
+const remote_resources = {
+  suffix:'http://',
+  ip:'18.188.151.28',
+  port:'1377'
+}
+const remote_address = remote_resources.suffix+remote_resources.ip+':'+remote_resources.port;
+
 const constants = {
   get_apps_url : '/json/apps.json',
   get_standards_url : '/json/standards.json',
@@ -9,10 +16,9 @@ const constants = {
   get_projects_url: '/json/projects.json',
   get_users_url: '/json/users.json',
   standards_url: {
-    "NIST 800-53":"/opencontrols/standards/nist-800-53-latest.json",
-    "tsc-2017":"/opencontrols/standards/tsc-2017.json",
-    "pci-dss":"/opencontrols/standards/pci-dss.json"
-  }
+    "NIST 800-53": remote_address+"/standard/get_standard/nist-800-53-latest"
+  },
+  remote_address
 };
 
 export default constants;

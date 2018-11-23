@@ -2,17 +2,15 @@
   {
     "name": "FedRAMP Low",
     "description": "FedRAMP is just so great.",
-    "url":"/opencontrols/certifications/fedramp-low.json"
+    "url":"/standard/get_certification/FedRAMP%20Low"
   },
   {
     "name": "FedRAMP Moderate",
-    "description": "FedRAMP is awesome.",
-    "url":"/opencontrols/certifications/fedramp-moderate.json"
+    "description": "FedRAMP is awesome."
   },
   {
     "name": "FedRAMP High",
-    "description": "FedRAMP High is super cool.",
-    "url":"/opencontrols/certifications/fedramp-high.json"
+    "description": "FedRAMP High is super cool."
   },
   {
     "name": "United States Air Force: C2SB",
