@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import {wizard, Wizard} from './wizard';
 import axios from 'axios';
-import paths from '../../core/paths'
-const [ip, port, loginUrl] = [paths.ip,paths.port, paths.login]
+import constants from '../../core/constants'
+const [remote_address,loginUrl] = [constants.remote_address, constants.loginUrl];
 
 export default class Login extends React.Component{
   constructor(props){
@@ -40,7 +40,7 @@ export default class Login extends React.Component{
   }
 
   logIn=()=>{
-    axios.post(ip+":"+port+"/"+loginUrl,{
+    axios.post(remote_address+loginUrl,{
       "username":this.state.userName,
       "password":this.state.password
     })

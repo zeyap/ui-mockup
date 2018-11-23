@@ -1,5 +1,6 @@
 let constants = require('../core/constants');
 constants = constants.default;
+let axios = require('axios');
 
 /**
 * A helper function to loop through an array and output Promise object
@@ -23,21 +24,36 @@ Array.prototype.forEachConsecutively = function(fn){
 * Request controls of all standards and add to 'standards' array
 * @author zeyap
 */
+
+var formatStandard = function(standard){
+    if(standard.length==0)return {};
+    let formatted = {
+        name:standard[0].standardName
+    };
+    for(let i=0;i<standard.length;i++){
+        formatted[standard[i].controls[0].controlName] = standard[i].controls[0].controlInfo;
+        if(formatted[standard[i].controls[0].controlName].desc){
+            formatted[standard[i].controls[0].controlName].description = formatted[standard[i].controls[0].controlName].desc;
+            delete formatted[standard[i].controls[0].controlName].desc;
+        }
+    }
+    return formatted;
+
+}
+
 module.exports.addStandardsControlFamilies = function(standards){
     return standards.forEachConsecutively(function(arr,i,callback){
         let _ = arr[i];
-        return fetch(constants.standards_url[_.key]).then(r=>{
-                if(r.url.indexOf('undefined')===-1){
-                    console.log(r.json())
-                    return r.json();
-                }else{
-                    return null;
-                }
+        _=Object.assign(_,{
+            controlFamilies: 0, totalControls: 0, inheritingComponents:{}
+        });
+        if(constants.standards_url[_.key]===undefined){
+            return callback(arr, i,callback,standards);
+        }else return axios.get(constants.standards_url[_.key]+'.yaml').then(r=>{
+                return formatStandard(r.data);
             })
             .then(data=>{
-                _=Object.assign(_,{
-                    controlFamilies: 0, totalControls: 0, inheritingComponents:{}
-                });
+                console.log(data)
                 if(data !== null) {
                     let prevControl = undefined;
                     for(let control in data){
@@ -51,7 +67,6 @@ module.exports.addStandardsControlFamilies = function(standards){
                 }
                 // console.log(i, arr.length-1)
                 return callback(arr, i,callback,standards);
-                
             })
     })
 }

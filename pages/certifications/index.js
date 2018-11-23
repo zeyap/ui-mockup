@@ -36,6 +36,7 @@ class AppsPage extends React.Component {
   render() {
     return (
       <Layout className="container-fluid container-pf-nav-pf-vertical">
+      <h1>Certifications</h1>
         <CertificationsListView apps={ this.state.apps }/>
       </Layout>
     );

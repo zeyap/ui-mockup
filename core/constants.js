@@ -16,8 +16,11 @@ const constants = {
   get_projects_url: '/json/projects.json',
   get_users_url: '/json/users.json',
   standards_url: {
-    "NIST 800-53": remote_address+"/standard/get_standard/nist-800-53-latest"
+    "NIST 800-53": remote_address+"/standard/get_standard/NIST-800-53",
+    "tsc-2017": remote_address+"/standard/get_standard/TSC"
   },
+  loginUrl: '/user/login',
+  createUserUrl:'/user/',
   remote_address
 };
 
