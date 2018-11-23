@@ -7,8 +7,10 @@
     "npm": ">=3.8"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "babel-polyfill": "^6.9.1",
     "classnames": "^2.2.5",
+    "cors-anywhere": "^0.4.1",
     "fastclick": "^1.0.6",
     "history": "^3.0.0",
     "jquery": "^3.2.1",
