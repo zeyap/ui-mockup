@@ -88,7 +88,7 @@ class AppsPage extends React.Component {
         );
       
     }else{
-      console.log(this.state.showDetail)
+      // console.log(this.state.showDetail)
       return (
       <Layout>
       <div className="container-fluid container-pf-nav-pf-vertical container-cards-pf">

@@ -79,9 +79,10 @@ export default class Login extends React.Component{
           username: this.state.userName,
           compliance: compliance
         }));
+        
+        window.location="/standards";
       });
       // handle success
-      window.location="/standards";
 
     })
     .catch((error) =>{
@@ -97,7 +98,11 @@ export default class Login extends React.Component{
   getUserCompliance = (callback)=>{
     axios.get(remote_address+constants.getUserCompliance+this.state.userName)
     .then(r=>{
+      console.log(r)
       callback(r.data);
+    })
+    .catch((e)=>{
+      callback([])
     });
   }
 

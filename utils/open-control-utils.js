@@ -168,6 +168,7 @@ module.exports.getCertificationCompliance = function(certifications){
                 _.totalControls = doc.controls.length;
                 
                 let compliance = JSON.parse(sessionStorage.getItem('user'));
+                if(compliance === null) return callback(arr, i+1,callback,certifications);
                 let complianceMap = {};
                 for(let i=0;i<compliance.length;i++){
                     complianceMap[compliance[i].Control] = compliance[i].Status;

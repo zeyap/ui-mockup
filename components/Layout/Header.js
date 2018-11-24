@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from '../Link';
 
-function Header() {
+function Header(props) {
   return (
     <nav className="navbar navbar-pf-vertical">
       <div className="navbar-header">
@@ -42,22 +42,23 @@ function Header() {
           </li>
           <li className="dropdown">
             <a className="dropdown-toggle nav-item-iconic" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              <span title="Help" className="fa pficon-help"></span>
-              <span className="caret"></span>
+              <span title="Help" className="pficon pficon-help"></span>
             </a>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
               <li><a href="#">Help</a></li>
               <li><a href="#">About</a></li>
             </ul>
           </li>
+          
           <li className="dropdown">
             <a className="dropdown-toggle nav-item-iconic" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              <span title="Username" className="fa pficon-user"></span>
+              <span title="Username" className="pficon pficon-user"></span>
+              <b>{props.username}  </b>
               <span className="caret"></span>
             </a>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
               <li><a href="#">Preferences</a></li>
-              <li><a href="#">Logout</a></li>
+              <li><a onClick={props.logout}>Logout</a></li>
             </ul>
           </li>
         </ul>
