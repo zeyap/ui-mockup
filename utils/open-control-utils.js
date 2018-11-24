@@ -96,34 +96,100 @@ module.exports.getStandardsComplianceData = function(standards){
         standardMap[standards[i].key] = i;
     }
     
-    return fetch(constants.get_components_url).then(r=>r.json())
-    .then(components=>{
+    return getComponents(components=>{
         return components.forEachConsecutively(function(arr,i,callback){
             let _ = arr[i];
             return fetch(_.url).then(r=>{
-                if(r.url.indexOf('undefined') >=0) return null;
+                if(_.url===undefined||_.url==='session') return null;
                 else{
                     return r.json()
                 }
             })
             .then((doc)=>{
-                if(doc !== null){
-                doc.satisfies.forEach((standardItem)=>{
-                    let targetStandard = standards[standardMap[caseHyphenInsensitive(standardItem.standard_key)]];
-                    if(targetStandard.inheritingComponents[doc.name]===undefined){
-                        targetStandard.inheritingComponents[doc.name] = _.url;
-                    }
-                })
+                if(_.url == 'session'){
+                    let userData = JSON.parse(sessionStorage.getItem('user'));
+                    doc = {
+                        documentation_complete:false,
+                        name:userData.username+"'s Component",
+                        satisfies: [],
+                        schema_version:''
+                    };
+                    return axios.get(constants.remote_address+constants.getAllStandardsControls)
+                    .then(r=>{
+                        let controls = r.data;
+                        controls.sort((a,b)=>{
+                            if(a.controls[0].controlName === b.controls[0].controlName)return 0;
+                            else if(a.controls[0].controlName > b.controls[0].controlName)return 1;
+                            else return -1;
+                        })
+                        for(let i=0;i<userData.compliance.length;i++){
+                            let target = userData.compliance[i].Control;
+                            let found = controls[search(controls.map(c=>c.controls[0].controlName),target)];
+
+                            doc.satisfies.push({
+                                control_key: target,
+                                covered_by: [],
+                                implementation_status: ((status)=>{
+                                    let ans = 'not applicable';
+                                    switch(status){
+                                        case 1:
+                                        ans='complete';
+                                        break;
+                                        case 2:
+                                        ans='partial';
+                                        break;
+                                        case 3:
+                                        case 4:
+                                        case 5:
+                                        case 6:
+                                        default:
+                                        if(status===3){
+                                            ans='planned';
+                                        }else if(status ===4){
+                                            ans='none';
+                                        }else if(status===5){
+                                            ans='implemented';
+                                        }else if(status===6){
+                                            ans='unknown';
+                                        }else if(status===7){
+                                            ans='not applicable';
+                                        }
+                                        break;
+                                    }
+                                    return ans;
+                                })(userData.compliance[i].Status),
+                                narrative: [{text:found.controls[0].controlInfo.desc}],
+                                standard_key: found.standardName
+                            })
+                        }
+                        // console.log(doc)
+                        doc.satisfies.forEach((standardItem)=>{
+                            let targetStandard = standards[standardMap[caseHyphenInsensitive(standardItem.standard_key)]];
+                            if(targetStandard.inheritingComponents[doc.name]===undefined){
+                                targetStandard.inheritingComponents[doc.name] = _.url;
+                            }
+                        })
+                        return callback(arr, i,callback,standards);
+
+                    });
+                }//url!=='session'
+                else if(doc !== null){
+                    // console.log(doc)
+                    doc.satisfies.forEach((standardItem)=>{
+                        let targetStandard = standards[standardMap[caseHyphenInsensitive(standardItem.standard_key)]];
+                        if(targetStandard.inheritingComponents[doc.name]===undefined){
+                            targetStandard.inheritingComponents[doc.name] = _.url;
+                        }
+                    })
+                    return callback(arr, i,callback,standards);
                 }
+
                 return callback(arr, i,callback,standards);
+                
                 
             })
             
         })
-    })
-    .catch(e=>{
-        console.log(e)
-        _reject('There are issues when fetching components');
     })
 }
 
@@ -165,8 +231,18 @@ module.exports.getCertificationCompliance = function(certifications){
                 const doc = cert[0];
                 // console.log(doc)
                 _.totalControls = doc.controls.length;
-                
-                let compliance = JSON.parse(sessionStorage.getItem('user'));
+
+                // getComponents((components)=>{
+                //     for(let j=0;j<components.length;j++){
+                //         if(components[j].url=='session' && components[j].compliance){
+
+                //         }
+                //     }
+                    
+                // })
+                const userData = JSON.parse(sessionStorage.getItem('user'));
+                const compliance = userData.compliance;
+                const componentName = userData.username+"'s Component";
                 if(compliance === null) return callback(arr, i+1,callback,certifications);
                 let complianceMap = {};
                 for(let i=0;i<compliance.length;i++){
@@ -176,6 +252,9 @@ module.exports.getCertificationCompliance = function(certifications){
                 let complete = 0;
                 let partial = 0;
                 let noncompliant = 0;
+
+                let completeComponentsMap = {};
+                let incompleteComponentsMap = {};
 
                 for(let i=0;i<doc.controls.length;i++){
                     
@@ -195,16 +274,18 @@ module.exports.getCertificationCompliance = function(certifications){
                     }
 
                     if(complete === _.totalControls){
-                        _.completeComponents.push(componentName);
+                        completeComponentsMap[componentName];
                     }else{
-                        _.incompleteComponents.push({
+                        incompleteComponentsMap[componentName] = {
                             name:componentName,
                             complete,
                             partial,
                             noncompliant
-                        });
+                        };
                     }
                 }
+                _.completeComponents = Object.keys(completeComponentsMap).map((k)=>completeComponentsMap[k]);
+                _.incompleteComponents = Object.keys(incompleteComponentsMap).map((k)=>incompleteComponentsMap[k]);
             }
             return callback(arr, i+1,callback,certifications);
         })
@@ -212,8 +293,9 @@ module.exports.getCertificationCompliance = function(certifications){
     
 }
 
-module.exports.getComponents = function(callback){
-    fetch(constants.get_components_url).then(r => r.json())
+var getComponents = function(callback){
+    return fetch(constants.get_components_url)
+    .then(r => r.json())
       .then(data => {
           const user=JSON.parse(sessionStorage.getItem('user'));
           data.forEach((d)=>{d.viewOnly=true;});
@@ -223,10 +305,12 @@ module.exports.getComponents = function(callback){
               compliance: user.compliance,
               viewOnly: false
           })
-        callback(data);
+        return callback(data);
       })
       .catch(e => console.log(e));
 }
+
+module.exports.getComponents = getComponents;
 
 var search = function(ascendArr,target){
     let l=0, r = ascendArr.length-1, mid = Math.floor((l+r)/2);
@@ -247,7 +331,10 @@ var search = function(ascendArr,target){
 module.exports.getComponent = function(comp,callback){
     let standardsCompliance={};
     standardsCompliance[comp.name]={};
-    if(comp.url==='session' && comp.compliance){
+    if(comp.url==='session'){
+        if(comp.compliance===undefined){
+            comp.compliance = JSON.parse(sessionStorage.getItem('user')).compliance;
+        }
         // TODO:
         axios.get(constants.remote_address+constants.getAllStandardsControls)
         .then(r=>{

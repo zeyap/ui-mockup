@@ -33,21 +33,35 @@ class StandardsListView extends ListViewBase {
         partial:0
       };
       let comp = {url:componentUrl, name:compName};
+      
       getComponent(comp,data=>{
-        console.log(data)
+        console.log(comp.name,data)
         standardCompliance=data[standardKey.split(/[\s]+[-]*/).join('-')];
 
         let tooltip = $('#componentTooltip-'+id);
-        tooltip.tooltip('hide');
         this.setState({
           componentCompletedControls:standardCompliance.satisfied,
           componentPartialControls:standardCompliance.partial
         });
-        setTimeout(() => {
-          tooltip.tooltip('show');
-        }, 300);
+        
+        tooltip.tooltip('show');
+        
       });
       
+    }
+  }
+
+  hideDetail = (id)=>{
+    return ()=>{
+      let tooltip = $('#componentTooltip-'+id);
+      tooltip.tooltip('hide');
+    }
+    
+  }
+  
+  componentWillReceiveProps(nextProp){
+    if(nextProp.apps !== this.props.apps){
+      return true;
     }
   }
 
@@ -60,7 +74,6 @@ class StandardsListView extends ListViewBase {
 
   render() {
     // eslint-disable-line no-use-before-define
-    
     return (
       <div className="list-group list-view-pf list-view-pf-view">
 
@@ -107,7 +120,7 @@ class StandardsListView extends ListViewBase {
                 <dt>Inheriting Components: </dt>
                 <dd>{app.inheritingComponents?Object.entries(app.inheritingComponents).map((comp,id)=>
                 (<div key={id} style={{margin: "0 0.5em 0 0"}}>
-                <a id={"componentTooltip-"+id} onMouseEnter={this.showComponentDetail(app.key,comp[1],id,comp[0])} onClick={this.openComponent(app.key,comp[1])} data-toggle="tooltip" data-placement="top" 
+                <a id={"componentTooltip-"+id} onMouseLeave={this.hideDetail(id)} onMouseEnter={this.showComponentDetail(app.key,comp[1],id,comp[0])} onClick={this.openComponent(app.key,comp[1])} data-toggle="tooltip" data-placement="top" 
                 data-original-title={'Completed: '+this.state.componentCompletedControls+'/'+app.totalControls+';   '+'Partially: '+this.state.componentPartialControls+'/'+app.totalControls}>
                  {comp[0]}</a></div>))
                 :(<div></div>)}</dd>
