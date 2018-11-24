@@ -80,16 +80,28 @@ class CardView extends React.Component {
             <h2 className="card-pf-title text-center">
               {user.name}
             </h2>
-            <div className="card-pf-items text-center">
+
+            {user.viewOnly?(<div className="card-pf-items text-center">
               <div className="card-pf-item">
-                <span className="pficon pficon-screen"></span>
-                <span className="card-pf-item-text">8</span>
+                <span className="pficon pficon-cloud-security"></span>
               </div>
               <div className="card-pf-item">
-                <span className="fa fa-check"></span>
+                Remote application
               </div>
-            </div>
-            <p className="card-pf-info text-center"><strong>Created On</strong> 2017-12-24 02:00 AM <br/> Never Expires</p>
+            </div>)
+            :(<div className="card-pf-items text-center">
+              <div className="card-pf-item">
+                <span className="pficon pficon-user"></span>
+              </div>
+              <div className="card-pf-item">
+                Your status
+              </div>
+            </div>)}
+            {user.viewOnly?(<p className="card-pf-info text-center"><span className="fa fa-ban"></span>
+                <span className="card-pf-item-text"> View Only</span></p>)
+            :(<p className="card-pf-info text-center"><span className="fa fa-check"></span>
+                <span className="card-pf-item-text"> Editable</span></p>)}
+
           </div>
           <div className="card-pf-view-checkbox">
             <input type="checkbox"/>

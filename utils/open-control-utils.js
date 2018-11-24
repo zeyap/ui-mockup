@@ -130,7 +130,6 @@ module.exports.getStandardsComplianceData = function(standards){
 let formatComponent = function(doc, standardsCompliance, compName){
     if(doc !== null){
         // console.log(doc)
-    standardsCompliance[compName]={};
     let component=standardsCompliance[compName];
         doc.satisfies.forEach((item)=>{
             component[item["standard_key"]] = component[item["standard_key"]]||{};
@@ -216,23 +215,118 @@ module.exports.getCertificationCompliance = function(certifications){
 module.exports.getComponents = function(callback){
     fetch(constants.get_components_url).then(r => r.json())
       .then(data => {
-        // localStorage.setItem('users',JSON.stringify(data));
+          const user=JSON.parse(sessionStorage.getItem('user'));
+          data.forEach((d)=>{d.viewOnly=true;});
+          data.push({
+              name: user.username+"'s Component",
+              url:'session',
+              compliance: user.compliance,
+              viewOnly: false
+          })
         callback(data);
       })
       .catch(e => console.log(e));
 }
 
-module.exports.getComponent = function(url,name,callback){
+var search = function(ascendArr,target){
+    let l=0, r = ascendArr.length-1, mid = Math.floor((l+r)/2);
+    while(l<r){
+        if(ascendArr[mid] === target){
+            return mid;
+        }else if(ascendArr[mid] < target){
+            l = mid+1;
+        }else {
+            r = mid-1;
+        }
+        mid = Math.floor((l+r)/2);
+    }
+
+    return mid;
+}
+
+module.exports.getComponent = function(comp,callback){
+    let standardsCompliance={};
+    standardsCompliance[comp.name]={};
+    if(comp.url==='session' && comp.compliance){
+        // TODO:
+        axios.get(constants.remote_address+constants.getAllStandardsControls)
+        .then(r=>{
+            let controls = r.data;
+            controls.sort((a,b)=>{
+                if(a.controls[0].controlName === b.controls[0].controlName)return 0;
+                else if(a.controls[0].controlName > b.controls[0].controlName)return 1;
+                else return -1;
+            })
+            for(let i=0;i<comp.compliance.length;i++){
+                let target = comp.compliance[i].Control;
+                let found = controls[search(controls.map(c=>c.controls[0].controlName),target)];
+                if(standardsCompliance[comp.name][found.standardName]===undefined){
+                    standardsCompliance[comp.name][found.standardName]={
+                        satisfied: 0,
+                        partial: 0,
+                        noncompliant: 0,
+                        totalControls:0,
+                        viewOnly: comp.viewOnly
+                    };
+                }
+                
+                standardsCompliance[comp.name][found.standardName][target] = {
+                    control_key: target,
+                    covered_by: [],
+                    implementation_status: ((status)=>{
+                        let ans = 'not applicable';
+                        switch(status){
+                            case 1:
+                            ans='complete';
+                            standardsCompliance[comp.name][found.standardName].satisfied++;
+                            break;
+                            case 2:
+                            ans='partial';
+                            standardsCompliance[comp.name][found.standardName].partial++;
+                            break;
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 6:
+                            default:
+                            if(status===3){
+                                ans='planned';
+                            }else if(status ===4){
+                                ans='none';
+                            }else if(status===5){
+                                ans='implemented';
+                            }else if(status===6){
+                                ans='unknown';
+                            }else if(status===7){
+                                ans='not applicable';
+                            }
+                            standardsCompliance[comp.name][found.standardName].noncompliant++;
+                            break;
+                        }
+                        standardsCompliance[comp.name][found.standardName].totalControls++;
+                        return ans;
+                    })(comp.compliance[i].Status),
+                    narrative: [{text:found.controls[0].controlInfo.desc}],
+                    standard_key: found.standardName
+                }
+            }
+            // console.log(standardsCompliance[comp.name])
+            callback(standardsCompliance[comp.name]);
+        })
+        return;
+    }
+
+    let [url,name] = [comp.url,comp.name];
     fetch(url).then(r=>r.json())
     .then(data=>{
         //format data
-        let standardsCompliance={};
         formatComponent(data, standardsCompliance,name);
         let meta = {
             satisfied: 0,
             partial: 0,
             noncompliant: 0,
-            totalControls:0
+            totalControls:0,
+            viewOnly: comp.viewOnly
         };
         for(let standardKey in standardsCompliance[name]){
             // Assume content has been though validation, no need for

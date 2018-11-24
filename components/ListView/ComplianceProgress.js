@@ -18,8 +18,7 @@ export default class ComplianceProgress extends React.Component {
       
       <div className="list-view-pf-additional-info-item">
         <span className="pficon pficon-orders"></span>
-        
-        Certification File Not Available
+        {'Certification File Not Available'}
         </div>
       </div>)
       }else 

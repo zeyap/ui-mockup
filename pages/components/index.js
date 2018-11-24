@@ -45,8 +45,7 @@ class AppsPage extends React.Component {
   openForm = (i,filterStandard)=>{
     return (function(){
       //request component
-      getComponent(this.state.users[i].url, this.state.users[i].name, data=>{
-
+      getComponent(this.state.users[i], data=>{
         if(filterStandard){
           filterStandard = filterStandard.split(/[\s|-]+/).join('-');
           //filter 'data'

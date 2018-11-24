@@ -32,7 +32,9 @@ class StandardsListView extends ListViewBase {
         satisfied:0,
         partial:0
       };
-      getComponent(componentUrl,compName,data=>{
+      let comp = {url:componentUrl, name:compName};
+      getComponent(comp,data=>{
+        console.log(data)
         standardCompliance=data[standardKey.split(/[\s]+[-]*/).join('-')];
 
         let tooltip = $('#componentTooltip-'+id);

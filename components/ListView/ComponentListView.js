@@ -34,8 +34,16 @@ class ComponentListView extends ListViewBase {
     // eslint-disable-line no-use-before-define
     return (
       <div className="list-group list-view-pf list-view-pf-view">
-        {this.state.detail.map((app,i) =>
-        <div className="list-group-item" key={i}>
+        {this.state.detail.map((app,i) =>{
+          let appDeletedMeta = JSON.parse(JSON.stringify(app));
+          // console.log(appDeletedMeta)
+          delete appDeletedMeta.satisfied;
+          delete appDeletedMeta.partial;
+          delete appDeletedMeta.noncompliant;
+          delete appDeletedMeta.totalControls;
+          delete appDeletedMeta.viewOnly;
+          delete appDeletedMeta.name;
+          return(<div className="list-group-item" key={i}>
 
           <div className="list-group-item-header">
             <div className="list-view-pf-expand">
@@ -66,10 +74,10 @@ class ComponentListView extends ListViewBase {
             {/* <button type="button" class="btn btn-default"></button>
           </div> */}
           <div style={{height: '1em', width: '100%'}}></div>
-          <StandardTableView standardKey={i} detail = {app}/>
+          <StandardTableView standardKey={i} detail = {appDeletedMeta} viewOnly={app.viewOnly}/>
           
         </div>
-      </div>
+      </div>)}
       )}
     </div>
     )

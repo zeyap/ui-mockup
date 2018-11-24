@@ -7,6 +7,9 @@ import DropdownMenu from './DropdownMenu'
 import DropdownTextbox from './DropdownTextbox'
 import StatusIcon from './StatusIcon'
 
+import axios from 'axios';
+import constants from '../../core/constants'
+
 class StandardTableView extends React.Component {
   constructor(props){
     super(props);
@@ -19,9 +22,12 @@ class StandardTableView extends React.Component {
       ifAllSelected: false,
       numberPerPage: 6,
       currentPage: 0,
-      detail: Object.entries(this.props.detail)
+      detail: Object.entries(this.props.detail),
+      viewOnly: this.props.viewOnly
     }
     this.selectedNumber =0;
+
+    this.complianceToUpdate={};
   }
   componentDidMount() {
     
@@ -156,13 +162,23 @@ class StandardTableView extends React.Component {
 
   setStatusInBatch=(status)=>{
     for(let i=0;i<this.paginatedDetail.length;i++){
-      this.paginatedDetail[i][1].implementation_status = status;
+      if(this.paginatedDetail[i][1] instanceof Object && this.state.isControlSelected[i]){
+        this.paginatedDetail[i][1].implementation_status = status;
+        this.complianceToUpdate[this.paginatedDetail[i][1].control_key]={
+          Control:this.paginatedDetail[i][1].control_key,
+          Status:status
+        }
+      }
     }
     this.updateDetail();
   }
   setImplementationStatus = (controlSelected, indexInPage)=>{
     return (status)=>{
       controlSelected.implementation_status = status;
+      this.complianceToUpdate[controlSelected.control_key]={
+        Control:controlSelected.control_key,
+        Status:status
+      };
       this.updateDetail();
     }
   }
@@ -174,17 +190,55 @@ class StandardTableView extends React.Component {
     this.setState({
       detail
     })
+
+    let temp=[];
+    for(let key in this.complianceToUpdate){
+      let compliance = this.complianceToUpdate[key];
+      compliance.Status = ((status)=>{
+        let ans = 7;
+        if(status==='Complete'){
+          ans = 1;
+        }else if(status==="Partial"){
+          ans=2;
+        }
+        else if(status==='Planned'){
+          ans=3;
+        }else if(status ==='None'){
+          ans=4;
+        }else if(status==='Implemented'){
+          ans=5;
+        }else if(status==='Unknown'){
+          ans=6;
+        }else if(status==='Not applicable'){
+          ans=7;
+        }
+        return ans;
+      })(compliance.Status);
+      temp.push(compliance);
+    }
+    
+    let that = this;
+    let username = JSON.parse(sessionStorage.getItem('user')).username;
+    axios.put(constants.remote_address+constants.updateCompliance,{
+      "username":username,
+      "controls":temp
+    }).then((r)=>{
+      // console.log(r)
+      that.complianceToUpdate={};
+    }).catch((e)=>{
+      console.log(e);
+    })
   }
 
   render() {
+    // console.log(this.state.isControlSelected)
     const Implementation_Status=['Not applicable', 'None','Unknown','Implemented','Planned','Partial', 'Complete'];
     let start = this.state.numberPerPage*this.state.currentPage;
     let end = start+this.state.numberPerPage;
     this.paginatedDetail = this.state.detail.slice(start,end);
     // console.log(start,end)
-    
+    // console.log(this.state.detail)
     let totalRecordNum = this.state.detail.length;
-    // console.log('render',totalRecordNum)
     return (<div>
     <div className={tableview.row}>
       <TableFilter totalRecordNum={totalRecordNum} addFilter={this.addFilter} clearFilters={this.clearFilters}/>
@@ -220,6 +274,10 @@ class StandardTableView extends React.Component {
       {this.paginatedDetail.map((control,controlid)=>{
         
         let suffix = '-'+this.standardKey+'-'+controlid;
+        // console.log(control[1].implementation_status)
+        if(control[1].implementation_status===undefined){
+          return (<tr key={controlid}></tr>)
+        }
         return(
         <tr key={controlid}>
           <td>
@@ -239,8 +297,8 @@ class StandardTableView extends React.Component {
 
           <td style={{whiteSpace: 'nowrap'}}>
           <StatusIcon status={control[1].implementation_status}/>
-            <DropdownMenu value={control[1].implementation_status.split('_').map((word)=>(word.charAt(0).toUpperCase() + word.slice(1))).join(' ')} 
-            onSelect={this.setImplementationStatus(control[1],controlid)} items={Implementation_Status}/>
+            {this.state.viewOnly?(<span>{control[1].implementation_status}</span>):(<DropdownMenu value={control[1].implementation_status.split('_').map((word)=>(word.charAt(0).toUpperCase() + word.slice(1))).join(' ')} 
+            onSelect={this.setImplementationStatus(control[1],controlid)} items={Implementation_Status}/>)}
           </td>
           
         </tr>

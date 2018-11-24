@@ -22,6 +22,8 @@ const constants = {
   loginUrl: '/user/login',
   createUserUrl:'/user/',
   getUserCompliance:'/standard/getCertificationForUser/',
+  getAllStandardsControls: '/standard/get_standard/all',
+  updateCompliance: '/standard/addCertificationToUser',
   remote_address
 };
 
