@@ -218,13 +218,24 @@ class StandardTableView extends React.Component {
     }
     
     let that = this;
-    let username = JSON.parse(sessionStorage.getItem('user')).username;
+    let userData = JSON.parse(sessionStorage.getItem('user'));
+    userData.compliance.forEach((item)=>{
+      if(undefined===this.complianceToUpdate[item.Control]){
+        temp.push(item);
+      }
+    })
+    // console.log(temp);
+      
+    let username = userData.username;
     axios.put(constants.remote_address+constants.updateCompliance,{
       "username":username,
       "controls":temp
     }).then((r)=>{
       // console.log(r)
       that.complianceToUpdate={};
+      userData.compliance = temp;
+      sessionStorage.setItem('user',JSON.stringify(userData));
+
     }).catch((e)=>{
       console.log(e);
     })
@@ -266,7 +277,7 @@ class StandardTableView extends React.Component {
           <th>ControlName</th>
           <th>CoveredBy</th>
           <th colSpan="4">Narrative</th>
-          <th >Status</th>
+          <th >Status {this.state.viewOnly?(<span></span>):(<span id="statusHelp" onMouseEnter={()=>{$('#statusHelp').tooltip('show');}} title="Manually refresh page if status doesn't update correctly" className="pficon pficon-help"></span>)}</th>
         </tr>
       </thead>
 

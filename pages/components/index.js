@@ -76,8 +76,8 @@ class AppsPage extends React.Component {
         return (
           <Layout>
             <div className="container-fluid container-pf-nav-pf-vertical">
-            <div style={{margin: '0 0 0 20px', height:'5.5em'}}><h1 style={{display:'inline-block'}}>Components</h1>
-            <button style={{display:'inline-block',float:'right',width:'100px', margin: '20px'}} className="btn btn-primary" type="button">Create New</button>
+            <div style={{margin: '0 0 0 20px', height:'5.5em'}}><h1>Components</h1>
+            {/* <button style={{display:'inline-block',float:'right',width:'100px', margin: '20px'}} className="btn btn-primary" type="button">Create New</button> */}
             </div>
 
               {this.state.users.length?(<CardView users={ this.state.users} onClickFunctions={this.openForm}/>)
@@ -99,7 +99,9 @@ class AppsPage extends React.Component {
         </ol>
       </nav>
 
-      <h1 >{this.state.users[this.state.showDetail].name}</h1>
+      <h1 style={{display:'inline-block'}}>{this.state.users[this.state.showDetail].name}</h1>
+      {this.state.users[this.state.showDetail].viewOnly?(<span></span>):(<button style={{display:'inline-block',float:'right',width:'100px', margin: '20px'}} className="btn btn-primary" type="button">
+      Add Controls</button>)}
 
         <ComponentListView detail={this.state.detail}/>
         </div>
