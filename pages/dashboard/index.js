@@ -90,19 +90,21 @@ class Dashboard extends React.Component {
 
 <div className = {style.content}>
 
-<div className={style['close-box']} style={{width:'100%'}}><div style={{borderBottom:'1px solid #dddddd'}}>
+<div className={style['close-box']} style={{width:'100%'}}>
+<div style={{borderBottom:'1px solid #dddddd'}}>
+Red Hat OpenStack Platform 13
 </div>
-      <div id="sparkline-chart-2" className={style['chart-sparkline-size']+" chart-pf-sparkline"}>
+  <div id="sparkline-chart-2" className={style['chart-sparkline-size']+" chart-pf-sparkline"}>
 </div>
 </div>
 
-       <div id={"donut-chart-31"} className={style['close-box']+" dashboard-donut-chart example-donut-chart-utilization"}></div>
-       <div id={"donut-chart-32"} className={style['close-box']+" dashboard-donut-chart example-donut-chart-utilization"}></div>
-       <div id={"donut-chart-33"} className={style['close-box']+" dashboard-donut-chart example-donut-chart-utilization"}></div>
+    <div id={"donut-chart-31"} className={style['close-box']+" dashboard-donut-chart example-donut-chart-utilization"}></div>
+    <div id={"donut-chart-32"} className={style['close-box']+" dashboard-donut-chart example-donut-chart-utilization"}></div>
+    <div id={"donut-chart-33"} className={style['close-box']+" dashboard-donut-chart example-donut-chart-utilization"}></div>
 
-       <div className={style['close-box']+' '+style['dashboard-table']}>
-       <div style={{borderBottom:'1px solid #dddddd'}}>Red Hat OpenStack Platform 13</div>
-       <table className="table table-striped table-bordered table-hover" id="table1">
+    <div className={style['close-box']+' '+style['dashboard-table']}>
+    <div style={{borderBottom:'1px solid #dddddd'}}>Red Hat OpenStack Platform 13</div>
+<table className="table table-striped table-bordered table-hover" id="table1">
   <thead>
     <tr>
       <th>ControlName</th>

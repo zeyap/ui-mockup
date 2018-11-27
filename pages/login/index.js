@@ -43,7 +43,7 @@ export default class Login extends React.Component{
     axios.get(ip+":"+port+"/"+loginUrl+this.state.userName)
     .then((response)=>{
       // handle success
-      window.location="/standards"
+      window.location="/dashboard"
     })
     .catch((error) =>{
       // handle error
