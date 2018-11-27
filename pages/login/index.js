@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
-import {wizard, Wizard} from './wizard'
+import {wizard, Wizard} from './wizard';
+import axios from 'axios';
+import paths from '../../core/paths'
+const [ip, port, loginUrl] = [paths.ip,paths.port, paths.login]
 
 export default class Login extends React.Component{
   constructor(props){
@@ -21,15 +24,39 @@ export default class Login extends React.Component{
           substeps:[{name:'Verification',items:[]}]
         }]
       }
+
+      this.state={
+        userName:'',
+        password:'',
+        correct: true
+      }
   }
 
   componentDidMount(){
     $(document).ready(function() {
-    //initialize wizard
-    var completeWizard = new wizard(".btn.wizard-pf-complete");
-  });
+      //initialize wizard
+      var completeWizard = new wizard(".btn.wizard-pf-complete");
+    });
+  }
 
-  
+  logIn=()=>{
+    axios.get(ip+":"+port+"/"+loginUrl+this.state.userName)
+    .then((response)=>{
+      // handle success
+      window.location="/standards"
+    })
+    .catch((error) =>{
+      // handle error
+      console.log(error);
+      this.setState({correct:false})
+    })
+  }
+
+  showUserName = (e)=>{
+    this.setState({
+      userName: e.target.value,
+      correct: true
+    })
   }
 
   render(){
@@ -42,9 +69,7 @@ export default class Login extends React.Component{
       <div className="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
         <header className="login-pf-page-header">
           {/* <img className="login-pf-brand" src="/assets/img/Logo_Horizontal_Reversed.svg" alt=" logo" /> */}
-          <p>
-            This is placeholder text, only. Use this area to place any information or introductory message about your application that may be relevant for users.
-          </p>
+          
         </header>
         <div className="row">
           <div className="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
@@ -52,34 +77,33 @@ export default class Login extends React.Component{
               <header className="login-pf-header">
                 <h1>Log In to Your Account</h1>
               </header>
-              <form>
+              {/* <form> */}
                 <div className="form-group">
-                  <label className="sr-only" htmlFor="exampleInputEmail1">Email address</label>
-                  <input className="form-control  input-lg" id="exampleInputEmail1" placeholder="Email address"/>
+                  <label className="sr-only" htmlFor="exampleInputEmail1">Username</label>
+                  <input className="form-control  input-lg" onChange={this.showUserName} value={this.state.userName} id="exampleInputEmail1" placeholder="Username"/>
                 </div>
                 <div className="form-group">
                   <label className="sr-only"  htmlFor="exampleInputPassword1">Password
                   </label>
                   <input type="password" className="form-control input-lg" id="exampleInputPassword1" placeholder="Password"/>
                 </div>
-                <div className="form-group login-pf-settings">
-                      <label className="checkbox-label">
-                        <input type="checkbox"/> Keep me logged in for 30 days
-                      </label>
-                      <a href="#">Forgot password?</a>
+                {this.state.correct?(<div></div>):(<div style={{color:'#df3838'}}>Invalid Username or Password</div>)}
+                
+                <div className="form-group login-pf-settings">                      
+                  <a href="#">Log in as Security Officer?</a>
                 </div>
-                <button type="submit" className="btn btn-primary btn-block btn-lg">Log In</button>
-              </form>
+                <button onClick={this.logIn} className="btn btn-primary btn-block btn-lg">Log In</button>
+              {/* </form> */}
               <p className="login-pf-signup">Need an account?
               <a className="btn btn-default wizard-pf-open wizard-pf-complete" data-target="#complete">Sign up</a></p>
             </div>
             
             <footer className="login-pf-page-footer">
-              <ul className="login-pf-page-footer-links list-unstyled">
+              {/* <ul className="login-pf-page-footer-links list-unstyled">
                 <li><a className="login-pf-page-footer-link" href="#">Terms of Use</a></li>
                 <li><a className="login-pf-page-footer-link" href="#">Help</a></li>
                 <li><a className="login-pf-page-footer-link" href="#">Privacy Policy</a></li>
-              </ul>
+              </ul> */}
             </footer>
           </div>
           {/* <!-- col --> */}

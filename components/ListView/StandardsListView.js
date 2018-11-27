@@ -109,6 +109,7 @@ class StandardsListView extends ListViewBase {
                 data-original-title={'Completed: '+this.state.componentCompletedControls+'/'+app.totalControls+';   '+'Partially: '+this.state.componentPartialControls+'/'+app.totalControls}>
                  {comp[0]}</a></div>))
                 :(<div></div>)}</dd>
+
               </dl>
             </div>
           </div>
