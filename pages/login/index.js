@@ -80,7 +80,7 @@ export default class Login extends React.Component{
           compliance: compliance
         }));
         
-        window.location="/standards";
+        window.location="/dashboard";
       });
       // handle success
 
