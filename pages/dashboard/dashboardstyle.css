@@ -1,0 +1,45 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  height: 100vh;
+  background-color: #f5f5f5;
+  /* padding: 1rem; */
+  overflow-y: scroll;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+.content div {
+  background-color: #fff;
+  margin: 1rem 0;
+}
+.close-box{
+  background: #fff;
+  position: relative;
+  padding: 5px 15px;
+}
+.close-box::before{
+  content: '✕';
+  color: black;
+  position: absolute;
+  top:10px;
+  right:10px;
+}
+
+.dashboard-table{
+  height: 180px;
+  width: calc(100% - 3*230px);
+  background: white;
+}
+
+.chart-sparkline-size {
+  grid-column: span 12;
+  height: 200px;
+  width:100%;
+}

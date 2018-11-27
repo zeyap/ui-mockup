@@ -118,12 +118,14 @@ class StandardsListView extends ListViewBase {
                 <dt>Total Controls: </dt>
                 <dd>{app.totalControls}</dd>
                 <dt>Inheriting Components: </dt>
+
                 <dd>{app.inheritingComponents?Object.entries(app.inheritingComponents).map((comp,id)=>
                 (<div key={id} style={{margin: "0 0.5em 0 0"}}>
                 <a id={"componentTooltip-"+id} onMouseLeave={this.hideDetail(id)} onMouseEnter={this.showComponentDetail(app.key,comp[1],id,comp[0])} onClick={this.openComponent(app.key,comp[1])} data-toggle="tooltip" data-placement="top" 
                 data-original-title={'Completed: '+this.state.componentCompletedControls+'/'+app.totalControls+';   '+'Partially: '+this.state.componentPartialControls+'/'+app.totalControls}>
                  {comp[0]}</a></div>))
                 :(<div></div>)}</dd>
+
               </dl>
             </div>
           </div>
