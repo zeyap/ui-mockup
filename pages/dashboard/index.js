@@ -23,7 +23,7 @@ class Dashboard extends React.Component {
     };
     sparklineChartConfig.data = {
       columns: [
-        ['%', 10, 14, 12, 20, 31, 27, 44, 36, 52, 55, 62, 68, 69, 88, 74, 88, 91],
+        ['%', 10, 14, 18, 20, 31, 40, 44, 50, 52, 55, 62, 68, 69, 74, 80, 80, 82],
       ],
       type: 'area'
     };
@@ -31,6 +31,8 @@ class Dashboard extends React.Component {
 
 
  // Donut configuration 1
+ var data  = [[82,18,320,"Satisfied"],[10,90,40,"Partial"],[8,92,35,"Noncompliant"]];
+
  var donutConfig1 = [];
  for(let i=0;i<3;i++){
   donutConfig1[i] = c3ChartDefaults.getDefaultDonutConfig('A');
@@ -38,8 +40,8 @@ class Dashboard extends React.Component {
  donutConfig1[i].data = {
    type: "donut",
    columns: [
-     ["Satisfied", 3],
-     ["Unsatisfied", 97],
+     ["Satisfied", data[i][0]],
+     ["Unsatisfied", data[i][1]],
    ],
    groups: [
      ["used", "available"]
@@ -48,7 +50,7 @@ class Dashboard extends React.Component {
  };
  donutConfig1[i].size = {
    width: 180,
-   height: 180
+   height: 240
  };
 
  donutConfig1[i].tooltip = {
@@ -56,7 +58,7 @@ class Dashboard extends React.Component {
  };
 
  c3.generate(donutConfig1[i]);
- $().pfSetDonutChartTitle("#donut-chart-3"+(i+1), "3", "Control Satisfied");
+ $().pfSetDonutChartTitle("#donut-chart-3"+(i+1), data[i][2], data[i][3]);
  }
  
 
@@ -87,10 +89,11 @@ class Dashboard extends React.Component {
     return (
       
       <Layout className="container-fluid container-pf-nav-pf-vertical">
-
+      <h1>Red Hat OpenStack Platform 13</h1>
 <div className = {style.content}>
 
 <div className={style['close-box']} style={{width:'100%'}}><div style={{borderBottom:'1px solid #dddddd'}}>
+Progress
 </div>
       <div id="sparkline-chart-2" className={style['chart-sparkline-size']+" chart-pf-sparkline"}>
 </div>
@@ -101,7 +104,7 @@ class Dashboard extends React.Component {
        <div id={"donut-chart-33"} className={style['close-box']+" dashboard-donut-chart example-donut-chart-utilization"}></div>
 
        <div className={style['close-box']+' '+style['dashboard-table']}>
-       <div style={{borderBottom:'1px solid #dddddd'}}>Red Hat OpenStack Platform 13</div>
+       <div style={{borderBottom:'1px solid #dddddd'}}>Events</div>
        <table className="table table-striped table-bordered table-hover" id="table1">
   <thead>
     <tr>
@@ -138,15 +141,6 @@ class Dashboard extends React.Component {
   </tbody>
 </table>
        </div>
-
-       <div className="progress">
-  <div className="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style={{"width": '25%'}} data-toggle="tooltip" title="25% Used">
-    <span className="sr-only">25% Used</span>
-  </div>
-  <div className="progress-bar progress-bar-remaining" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style={{"width": "75%"}} data-toggle="tooltip" title="75% Available">
-    <span className="sr-only">75% Available</span>
-  </div>
-</div>
 </div>
 
   

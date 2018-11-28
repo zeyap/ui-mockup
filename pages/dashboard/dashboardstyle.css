@@ -11,13 +11,12 @@
   overflow-y: scroll;
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-content: flex-start;
   width: 100%;
 }
 .content div {
   background-color: #fff;
-  margin: 1rem 0;
+  margin: 0.5rem;
 }
 .close-box{
   background: #fff;
@@ -33,7 +32,8 @@
 }
 
 .dashboard-table{
-  height: 180px;
+  height: 240px;
+  overflow-y: scroll;
   width: calc(100% - 3*230px);
   background: white;
 }
